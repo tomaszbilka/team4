@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import '../styles/styles.css';
@@ -6,7 +6,6 @@ import '../styles/styles.css';
 const Login = (props) => {
 	const [userName, setUserName] = useState('');
 	const [isValid, setIsValid] = useState(false);
-	const a = '4';
 
 	const userNameChangeHandler = (event) => {
 		const inputedText = event.target.value;
@@ -19,7 +18,6 @@ const Login = (props) => {
 	};
 
 	const loginHandler = () => {
-		//check if user exist in db
 		props.userLoginHandler(userName);
 		setIsValid(false);
 		setUserName('');
