@@ -1,25 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import Login from './components/Login';
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+
+import Calendar from './Screens/Calendar';
+import Bundle from './Screens/Bundle';
+import Settings from './Screens/Settings';
+
+import MainLayout from './Layouts/MainLayout';
 
 function App() {
-	const [isLogged, setIsLogged] = useState(false);
-
-	useEffect(() => {
-		if (localStorage.getItem('userName')) {
-			setIsLogged(true);
-		}
-	}, []);
-
-	const loginHandler = (user) => {
-		console.log(user);
-		localStorage.setItem('userName', user);
-		setIsLogged(true);
-	};
-
 	return (
 		<>
-			{!isLogged && <Login userLoginHandler={loginHandler} />}
-			{isLogged && <p>aplikacja po zalogowaniu</p>}
+			<MainLayout>
+				<Router>
+					<div>
+						<nav>
+							<ul>
+								<li>
+									<Link to="/">Kalendarz</Link>
+								</li>
+								<li>
+									<Link to="/bundle">Bundle</Link>
+								</li>
+								<li>
+									<Link to="/settings">Ustawienia</Link>
+								</li>
+							</ul>
+						</nav>
+
+						<Switch>
+							<Route path="/settings">
+								<Settings />
+							</Route>
+							<Route path="/bundle">
+								<Bundle />
+							</Route>
+							<Route path="/">
+								<Calendar />
+							</Route>
+						</Switch>
+					</div>
+				</Router>
+			</MainLayout>
 		</>
 	);
 }
