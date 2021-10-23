@@ -2,10 +2,45 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+
+import { getUserFromLocalStorage } from './utils/localStorage';
+
+const localStorageToken = 'wos-user';
+
+const httpLink = createHttpLink({
+  uri: 'https://worklog-on-steroids.herokuapp.com/api/ql_open',
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = getUserFromLocalStorage(localStorageToken);
+
+  if (token) {
+    return {
+      headers: {
+        ...headers,
+        'user-name': token,
+      },
+    };
+  }
+});
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: authLink.concat(httpLink),
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App token={localStorageToken} />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

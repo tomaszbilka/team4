@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { Navigation } from './layout';
-import { Calendar, Bundle, Settings, Login } from './screens';
+import { Calendar, Bundle, Settings, Login } from './Screens';
 
-import { getUserFromLocalStorage } from './utils/localStorage';
+import { useGetUser } from './queries';
 
-const localStorageToken = 'wos-user';
+function App({ token }) {
+  const { username, loading } = useGetUser();
+  const [authUser, setAuthUser] = useState(null);
 
-function App() {
-  const [authUser, setAuthUser] = useState(
-    getUserFromLocalStorage(localStorageToken)
-  );
+  useEffect(() => {
+    setAuthUser(username);
+  }, [username]);
 
   return (
     <Router>
-      {!authUser && (
-        <Login setAuthUser={setAuthUser} token={localStorageToken} />
-      )}
+      {loading && <div>Loading...</div>}
+
+      {!authUser && <Login token={token} setAuthUser={setAuthUser} />}
+
       {authUser && (
         <div className="App">
-          <Navigation setAuthUser={setAuthUser} token={localStorageToken} />
+          <Navigation token={token} setAuthUser={setAuthUser} />
 
           <Switch>
             <Route path="/settings" component={Settings} />
