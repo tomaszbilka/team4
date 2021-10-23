@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+
 import '../styles/styles.css';
 
 const Login = (props) => {
@@ -18,6 +20,7 @@ const Login = (props) => {
   };
 
   const loginHandler = () => {
+    //check if user exist in db
     props.userLoginHandler(userName);
     setIsValid(false);
     setUserName('');
