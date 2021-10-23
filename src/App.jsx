@@ -1,11 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-import Calendar from './Screens/Calendar';
-import Bundle from './Screens/Bundle';
-import Settings from './Screens/Settings';
+import { Calendar, Bundle, Settings } from './screens';
 
-import MainLayout from './Layouts/MainLayout';
+import MainLayout from './layouts/MainLayout';
 
 function App() {
   return (
