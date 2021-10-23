@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Header = () => {
+import { LogoutButton } from '../../components';
+
+const Header = ({ token, setAuthUser }) => {
   return (
     <nav>
       <ul>
@@ -13,6 +15,9 @@ const Header = () => {
         </li>
         <li>
           <Link to="/settings">Ustawienia</Link>
+        </li>
+        <li>
+          <LogoutButton setAuthUser={setAuthUser} token={token} />
         </li>
       </ul>
     </nav>
