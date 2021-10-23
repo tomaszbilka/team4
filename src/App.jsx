@@ -1,45 +1,22 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+import { Navigation } from './layout';
 import { Calendar, Bundle, Settings } from './screens';
-
-import MainLayout from './layouts/MainLayout';
 
 function App() {
   return (
-    <>
-      <MainLayout>
-        <Router>
-          <div>
-            <nav>
-              <ul>
-                <li>
-                  <Link to="/">Kalendarz</Link>
-                </li>
-                <li>
-                  <Link to="/bundle">Bundle</Link>
-                </li>
-                <li>
-                  <Link to="/settings">Ustawienia</Link>
-                </li>
-              </ul>
-            </nav>
+    <Router>
+      <div className="App">
+        <Navigation />
 
-            <Switch>
-              <Route path="/settings">
-                <Settings />
-              </Route>
-              <Route path="/bundle">
-                <Bundle />
-              </Route>
-              <Route path="/">
-                <Calendar />
-              </Route>
-            </Switch>
-          </div>
-        </Router>
-      </MainLayout>
-    </>
+        <Switch>
+          <Route path="/settings" component={Settings} />
+          <Route path="/bundle" component={Bundle} />
+          <Route exact path="/" component={Calendar} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
