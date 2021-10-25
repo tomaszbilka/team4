@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { Navigation } from './layout';
-import { Calendar, Bundle, Settings, Login } from './Screens';
+import { Calendar, Bundle, Settings, Login } from './screens';
 
 import { useGetUser } from './queries';
+
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 function App({ token }) {
   const { username, loading } = useGetUser();
@@ -16,9 +19,15 @@ function App({ token }) {
 
   return (
     <Router>
-      {loading && <div>Loading...</div>}
+      {loading && (
+        <Box sx={{ display: 'flex' }}>
+          <CircularProgress />
+        </Box>
+      )}
 
-      {!authUser && <Login token={token} setAuthUser={setAuthUser} />}
+      {!authUser && !loading && (
+        <Login token={token} setAuthUser={setAuthUser} />
+      )}
 
       {authUser && (
         <div className="App">
