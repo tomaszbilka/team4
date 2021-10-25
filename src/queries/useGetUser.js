@@ -4,6 +4,7 @@ const PROFILE_QUERY = gql`
   query GetCurrentUser {
     getProfile {
       oauthId
+      _id
     }
   }
 `;
@@ -11,10 +12,9 @@ const PROFILE_QUERY = gql`
 const useGetUser = () => {
   const { data, loading } = useQuery(PROFILE_QUERY);
 
-  const username =
-    data?.getProfile?.oauthId !== 'open-user' && data?.getProfile?.oauthId;
+  if (data?.getProfile?.oauthId === 'open-user') return { user: null, loading };
 
-  return { username, loading };
+  return { user: data?.getProfile, loading };
 };
 
 export default useGetUser;

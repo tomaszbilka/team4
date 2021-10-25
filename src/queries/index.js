@@ -1,3 +1,4 @@
 import useGetUser from './useGetUser';
+import useGetEntries from './useGetEntries';
 
-export { useGetUser };
+export { useGetUser, useGetEntries };

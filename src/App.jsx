@@ -10,12 +10,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 function App({ token }) {
-  const { username, loading } = useGetUser();
   const [authUser, setAuthUser] = useState(null);
+  const { user, loading } = useGetUser();
 
   useEffect(() => {
-    setAuthUser(username);
-  }, [username]);
+    setAuthUser(user);
+  }, [user]);
 
   return (
     <Router>

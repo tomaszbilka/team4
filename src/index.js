@@ -11,6 +11,7 @@ import {
 import { setContext } from '@apollo/client/link/context';
 
 import { getUserFromLocalStorage } from './utils/localStorage';
+import { UserProvider } from './contexts/UserContext';
 
 const localStorageToken = 'wos-user';
 
@@ -21,6 +22,7 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
   const token = getUserFromLocalStorage(localStorageToken);
 
+  console.log(token);
   if (token) {
     return {
       headers: {
@@ -39,7 +41,9 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App token={localStorageToken} />
+      <UserProvider>
+        <App token={localStorageToken} />
+      </UserProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
