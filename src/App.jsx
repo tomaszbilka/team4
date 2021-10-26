@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { Navigation } from './layout';
-import { Calendar, Bundle, Settings, Login } from './Screens';
+import { Calendar, Bundle, Settings, Login } from './screens';
 
 import { useGetUser } from './queries';
 

@@ -1,49 +1,43 @@
-import React, { useReducer, useState } from 'react';
+/* eslint-disable */
+import React, { useState } from 'react';
+
+import { Form } from '../../components'
+import { Container, Box } from '@mui/material';
+// import { useFormik } from 'formik';
+// import { gql, useMutation } from '@apollo/client';
+// import * as yup from 'yup';
 
 import { useGetEntries } from '../../queries';
+import { useRemoveEntry } from '../../mutations';
+
+// const CREATE_ENTRY = gql`
+//   mutation CreateEntry($record: EntryCreateTypeInput) {
+//     createEntry(record: $record) {
+//       _id
+//       startTime
+//       endTime
+//       tag {
+//         name
+//       }
+//     }
+//   }
+// `;
 
 const getTimeStamp = () => {
   const timeStamp = new Date();
 
-  timeStamp.setHours(0, 0, 0, 0);
+  timeStamp.setHours(2, 0, 0, 0, 0);
 
   return timeStamp;
 };
 
-const initFormState = {
-  startTime: '',
-  endTime: '',
-  date: '',
-  tagName: '',
-  tagBundleName: '',
-};
-
-const formReducer = (state, { type, payload }) => {
-  switch (type) {
-    case 'SET_START_TIME':
-      return { ...state, startTime: payload };
-    case 'SET_END_TIME':
-      return { ...state, endTime: payload };
-    case 'SET_DATE':
-      return { ...state, date: payload };
-    case 'SET_TAG':
-      return { ...state, tagName: payload };
-    case 'SET_TAG_BUNDLE':
-      return { ...state, tagBundleName: payload };
-    default:
-      return state;
-  }
-};
-
 const Calendar = () => {
   const [today, setToday] = useState(getTimeStamp());
-  const [formValues, dispatchFormValues] = useReducer(formReducer, {
-    ...initFormState,
-    date: today?.toISOString(),
-  });
   const { data } = useGetEntries({
     date: today,
   });
+  const { removeEntryById } = useRemoveEntry();
+  console.log(removeEntryById)
 
   const handleButtonClick = (direction) => {
     setToday((prevDate) => {
@@ -54,14 +48,9 @@ const Calendar = () => {
     });
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    console.log(e.target.value);
+  const handleEntryRemove = () => {
+    
   };
-
-  console.log(data);
-  console.log(formValues);
-  console.log(today.toISOString());
 
   return (
     <div>
@@ -74,81 +63,21 @@ const Calendar = () => {
         })}
       </h1>
       <button onClick={() => handleButtonClick(1)}>Next</button>
-      <div>
+      <Container container direction="column">
         {data?.entryMany?.map(
           ({
             _id,
-            startTime,
-            endTime,
-            date,
-            tag: {
-              name: tagName,
-              tagBundle: { name: bundleName },
-            },
-          }) => (
-            <li key={_id}>
-              <p>Start Time: {startTime}</p>
-              <p>End Time: {endTime}</p>
-              <p>Date: {date}</p>
-              <p>Tag: {tagName}</p>
-              <p>TagBundle: {bundleName}</p>
-            </li>
-          )
+            data: today,
+            tag,
+            ...initialValues
+          }) =>
+          <Box m={2}>
+           <Form key={_id} data={data} tagName={tag?.name} tagBundleName={tag?.tagBundle?.name} {...initialValues} />
+           <button>Add new</button>
+           <button>Remove</button>
+          </Box>
         )}
-      </div>
-      <form onSubmit={handleFormSubmit}>
-        Start Time:{' '}
-        <input
-          onChange={(e) =>
-            dispatchFormValues({
-              type: 'SET_START_TIME',
-              payload: e.target.value,
-            })
-          }
-          type="time"
-        />
-        End Time:{' '}
-        <input
-          onChange={(e) =>
-            dispatchFormValues({
-              type: 'SET_END_TIME',
-              payload: e.target.value,
-            })
-          }
-          type="time"
-        />
-        Tag Bundle
-        <input
-          onChange={(e) =>
-            dispatchFormValues({
-              type: 'SET_TAG_BUNDLE',
-              payload: e.target.value,
-            })
-          }
-          list="tagBundles"
-          name="tagBundle"
-          id="tagBundle"
-        />
-        <datalist id="tagBundles">
-          <option value="selleo" />
-        </datalist>
-        Tag
-        <input
-          onChange={(e) =>
-            dispatchFormValues({
-              type: 'SET_TAG',
-              payload: e.target.value,
-            })
-          }
-          list="tags"
-          name="tag"
-          id="tag"
-        />
-        <datalist id="tags">
-          <option value="warsztaty" />
-        </datalist>
-        <button type="submit">Submit</button>
-      </form>
+      </Container>
     </div>
   );
 };

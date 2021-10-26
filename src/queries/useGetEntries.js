@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 
-const ENTRY_QUERY = gql`
+export const ENTRY_QUERY = gql`
   query GetEntries($filter: FilterFindManyEntryInput) {
     entryMany(filter: $filter) {
       _id
