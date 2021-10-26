@@ -1,8 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
 
 const ENTRY_QUERY = gql`
-  query getEntries {
-    entryMany {
+  query GetEntries($filter: FilterFindManyEntryInput) {
+    entryMany(filter: $filter) {
+      _id
       startTime
       endTime
       date
@@ -13,13 +14,18 @@ const ENTRY_QUERY = gql`
         name
         updatedAt
         createdAt
+        tagBundle {
+          name
+          updatedAt
+          createdAt
+        }
       }
     }
   }
 `;
 
-const useGetEntries = () => {
-  const { data, loading } = useQuery(ENTRY_QUERY);
+const useGetEntries = (filter = {}) => {
+  const { data, loading } = useQuery(ENTRY_QUERY, { variables: { filter } });
 
   return { data, loading };
 };
