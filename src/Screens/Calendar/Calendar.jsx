@@ -1,27 +1,10 @@
-/* eslint-disable */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Form } from '../../components'
+import { Form } from '../../components';
 import { Container, Box } from '@mui/material';
-// import { useFormik } from 'formik';
-// import { gql, useMutation } from '@apollo/client';
-// import * as yup from 'yup';
 
 import { useGetEntries } from '../../queries';
-import { useRemoveEntry } from '../../mutations';
-
-// const CREATE_ENTRY = gql`
-//   mutation CreateEntry($record: EntryCreateTypeInput) {
-//     createEntry(record: $record) {
-//       _id
-//       startTime
-//       endTime
-//       tag {
-//         name
-//       }
-//     }
-//   }
-// `;
+import { useRemoveEntry, useNewEntry, useUpdateEntry } from '../../mutations';
 
 const getTimeStamp = () => {
   const timeStamp = new Date();
@@ -31,15 +14,19 @@ const getTimeStamp = () => {
   return timeStamp;
 };
 
+const getValidInitialValue = (value) => value || '';
+
 const Calendar = () => {
   const [today, setToday] = useState(getTimeStamp());
   const { data } = useGetEntries({
     date: today,
   });
+  const [entries, setEntries] = useState([]);
   const { removeEntryById } = useRemoveEntry();
-  console.log(removeEntryById)
+  const { createNewEntry } = useNewEntry();
+  const { updateEntryById } = useUpdateEntry();
 
-  const handleButtonClick = (direction) => {
+  const handleDateButtonClick = (direction) => {
     setToday((prevDate) => {
       const newDate = new Date(prevDate);
       newDate.setDate(newDate.getDate() + direction);
@@ -48,13 +35,55 @@ const Calendar = () => {
     });
   };
 
-  const handleEntryRemove = () => {
-    
+  const handleEntryRemove = (id) => () => {
+    removeEntryById({
+      variables: {
+        id,
+      },
+    });
   };
+
+  const handleAddNewEntryButtonClick = (currentOrder) => () => {
+    const orderOfNewEntry = currentOrder + 1;
+    const indexOfCurrentEntry = entries.findIndex(
+      ({ order }) => order === currentOrder
+    );
+    const entriesToBeUpdated = entries.slice(indexOfCurrentEntry + 1);
+
+    entriesToBeUpdated.map(({ _id, order: orderToBeUpdated }) => {
+      updateEntryById({
+        variables: {
+          id: _id,
+          record: {
+            order: orderToBeUpdated + 1,
+          },
+        },
+      });
+    });
+
+    createNewEntry({
+      variables: {
+        record: {
+          order: orderOfNewEntry,
+          date: today,
+        },
+      },
+    });
+  };
+
+  useEffect(() => {
+    const entriesList = data?.entryMany && [...data?.entryMany];
+
+    entriesList &&
+      entriesList.sort(
+        ({ order: orderA }, { order: orderB }) => orderA - orderB
+      ) &&
+      setEntries(entriesList);
+  }, [data]);
 
   return (
     <div>
-      <button onClick={() => handleButtonClick(-1)}>Prev</button>
+      <button onClick={() => handleDateButtonClick(-1)}>Prev</button>
       <h1>
         {today?.toLocaleDateString('pl-pl', {
           year: 'numeric',
@@ -62,21 +91,24 @@ const Calendar = () => {
           day: 'numeric',
         })}
       </h1>
-      <button onClick={() => handleButtonClick(1)}>Next</button>
-      <Container container direction="column">
-        {data?.entryMany?.map(
-          ({
-            _id,
-            data: today,
-            tag,
-            ...initialValues
-          }) =>
-          <Box m={2}>
-           <Form key={_id} data={data} tagName={tag?.name} tagBundleName={tag?.tagBundle?.name} {...initialValues} />
-           <button>Add new</button>
-           <button>Remove</button>
+      <button onClick={() => handleDateButtonClick(1)}>Next</button>
+      <Container direction="column">
+        {entries.map(({ _id, tag, order, startTime, endTime }) => (
+          <Box key={_id} m={2}>
+            <Form
+              date={today.toISOString()}
+              tagName={getValidInitialValue(tag?.name)}
+              tagBundleName={getValidInitialValue(tag?.tagBundle?.name)}
+              startTime={getValidInitialValue(startTime)}
+              endTime={getValidInitialValue(endTime)}
+              id={_id}
+            />
+            <button onClick={handleAddNewEntryButtonClick(order)}>
+              Add new
+            </button>
+            <button onClick={handleEntryRemove(_id)}>Remove</button>
           </Box>
-        )}
+        ))}
       </Container>
     </div>
   );

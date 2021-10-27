@@ -10,6 +10,7 @@ export const ENTRY_QUERY = gql`
       tagId
       updatedAt
       createdAt
+      order
       tag {
         name
         updatedAt

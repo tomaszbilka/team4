@@ -1,4 +1,6 @@
 import useGetUser from './useGetUser';
 import useGetEntries from './useGetEntries';
+import useGetTagBundles from './useGetTagBundles';
+import useGetTagByBundle from './useGetTagByBundle';
 
-export { useGetUser, useGetEntries };
+export { useGetUser, useGetEntries, useGetTagBundles, useGetTagByBundle };

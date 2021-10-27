@@ -1,25 +1,75 @@
-import React from 'react';
-import { Grid, TextField, Select, MenuItem } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+/* eslint-disable */
+import { Grid, TextField, Select, MenuItem, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 
-const Form = ({ ...initialValues }) => {
-  const formik = useFormik({
+import { useUpdateEntry } from '../../mutations';
+import { useGetTagBundles, useGetTagByBundle } from '../../queries';
+
+const findBundle = (bundleList, bundleName) =>
+  bundleList.find(({ name }) => name === bundleName);
+
+const Form = ({ id, ...initialValues }) => {
+  const [availableTags, setAvailableTags] = useState([]);
+  const { updateEntryById } = useUpdateEntry();
+  const { data } = useGetTagBundles();
+  const { bundleTags, getBundleTags } = useGetTagByBundle();
+  const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues,
-    onSubmit: (values) => {
-      console.log(values);
-    },
   });
 
+  const handleOnBlur = (requiredField) => (e) => {
+    e.target.value &&
+      updateEntryById({
+        variables: {
+          id,
+          record: {
+            [e.target.name]: e.target.value,
+            [requiredField]: values[requiredField],
+          },
+        },
+      });
+
+    setFieldValue(e.target.name, e.target.value)
+  };
+
+  const handleTagBundleChange = (e) => {
+    setFieldValue('tagName', '');
+    handleChange(e);
+  };
+
+  const handleTagBundleOnBlur = (e) => {
+    console.dir(e.target)
+  }
+
+  useEffect(() => {
+    const bundleList = data?.tagBundleMany;
+
+    if (bundleList) {
+      const activeBundle = findBundle(bundleList, values?.tagBundleName) || {
+        name: '',
+        tags: [],
+      };
+
+      const tagNameList = activeBundle?.tags?.map(({ name, _id }) => ({
+        label: name,
+        id: _id,
+      }));
+
+      setAvailableTags(tagNameList);
+    }
+  }, [data]);
+
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <Grid container spacing={1}>
         <TextField
           id="startTime"
           name="startTime"
           type="time"
-          defaultValue="08:00"
-          value={formik.values.startTime}
-          onChange={formik.handleChange}
+          value={values.startTime}
+          onBlur={handleOnBlur()}
+          onChange={handleChange}
           InputLabelProps={{
             shrink: true,
           }}
@@ -29,10 +79,11 @@ const Form = ({ ...initialValues }) => {
         />
         <TextField
           id="endTime"
+          name="endTime"
           type="time"
-          defaultValue="08:00"
-          value={formik.values.endTime}
-          onChange={formik.handleChange}
+          value={values.endTime}
+          onBlur={handleOnBlur()}
+          onChange={handleChange}
           InputLabelProps={{
             shrink: true,
           }}
@@ -43,19 +94,41 @@ const Form = ({ ...initialValues }) => {
         <Select
           name="tagBundleName"
           id="tagBundleName"
-          value={formik.values.tagBundleName}
-          onChange={formik.handleChange}
-          label="Age"
+          value={values.tagBundleName}
+          onChange={handleTagBundleChange}
+          onBlur={handleTagBundleOnBlur}
           sx={{ width: 150 }}
         >
-          <MenuItem value="selleo">Selleo</MenuItem>
+          {data?.tagBundleMany?.map(({ name, _id: bundleId }) => (
+            <MenuItem key={bundleId} value={name}>
+              {name}
+            </MenuItem>
+          ))}
         </Select>
-        <TextField
-          value={formik.values.tagName}
-          onChange={formik.handleChange}
-          id="tagName"
-          variant="outlined"
+        <Autocomplete
+          disablePortal
+          options={availableTags}
+          value={values.tagName}
+          onChange={(_, value) => setFieldValue('tagName', value)}
+          onBlur={handleOnBlur('tagBundleName')}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField
+              id="tagName"
+              name="tagName"
+              {...params}
+            />
+          )}
         />
+        {/* <TextField
+          value={values.tagName}
+          onBlur={handleOnBlur('tagBundleName')}
+          onChange={handleChange}
+          disabled={!values.tagBundleName}
+          id="tagName"
+          name="tagName"
+          variant="outlined"
+        /> */}
       </Grid>
     </form>
   );

@@ -1,11 +1,10 @@
 import { gql, useMutation } from '@apollo/client';
-/* eslint-disable */
 
 import { ENTRY_QUERY } from '../queries/useGetEntries';
 
 const REMOVE_ENTRY_BY_ID = gql`
-  mutation RemoveEntryById($id: MongoID) {
-    entryRemoveById(id: $id) {
+  mutation RemoveEntryById($id: MongoID!) {
+    entryRemoveById(_id: $id) {
       record {
         tag {
           name
@@ -16,13 +15,14 @@ const REMOVE_ENTRY_BY_ID = gql`
 `;
 
 const useRemoveEntry = () => {
-  const [removeEntryById, test] = useMutation(REMOVE_ENTRY_BY_ID, {
+  const [removeEntryById, { error }] = useMutation(REMOVE_ENTRY_BY_ID, {
     refetchQueries: [ENTRY_QUERY, 'GetEntries'],
   });
 
-  console.log(test);
-
-  return { removeEntryById };
+  return {
+    removeEntryById,
+    removeError: error && 'Nie udało się usunąć entry',
+  };
 };
 
 export default useRemoveEntry;
