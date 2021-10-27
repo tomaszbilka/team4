@@ -3,6 +3,9 @@ import { gql, useQuery } from '@apollo/client';
 const PROFILE_QUERY = gql`
   query GetCurrentUser {
     getProfile {
+      tagBundles {
+        name
+      }
       oauthId
       _id
     }

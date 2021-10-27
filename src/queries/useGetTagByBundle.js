@@ -13,7 +13,9 @@ export const GET_TAGS_BY_BUNDLE = gql`
 const useGetTagBundles = () => {
   const [getBundleTags, { data, loading }] = useLazyQuery(GET_TAGS_BY_BUNDLE);
 
-  return { getBundleTags, bundleTags: data?.tagBundleById?.tags, loading };
+  const bundleTags = data?.tagBundleById?.tags?.map(({ name }) => name);
+
+  return { getBundleTags, bundleTags, loading };
 };
 
 export default useGetTagBundles;

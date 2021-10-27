@@ -50,12 +50,14 @@ const Calendar = () => {
     );
     const entriesToBeUpdated = entries.slice(indexOfCurrentEntry + 1);
 
-    entriesToBeUpdated.map(({ _id, order: orderToBeUpdated }) => {
+    entriesToBeUpdated.map(({ _id, order: orderToBeUpdated, tag }) => {
       updateEntryById({
         variables: {
           id: _id,
           record: {
             order: orderToBeUpdated + 1,
+            tagName: tag?.name,
+            tagBundleName: tag?.tagBundle?.name,
           },
         },
       });

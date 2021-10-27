@@ -12,10 +12,12 @@ export const ENTRY_QUERY = gql`
       createdAt
       order
       tag {
+        _id
         name
         updatedAt
         createdAt
         tagBundle {
+          _id
           name
           updatedAt
           createdAt

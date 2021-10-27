@@ -6,6 +6,20 @@ const UPDATE_ENTRY_BY_ID = gql`
   mutation UpdateEntryMutation($id: ID!, $record: EntryCreateTypeInput) {
     updateEntry(_id: $id, record: $record) {
       order
+      startTime
+      endTime
+      tag {
+        _id
+        name
+        updatedAt
+        createdAt
+        tagBundle {
+          _id
+          name
+          updatedAt
+          createdAt
+        }
+      }
     }
   }
 `;
