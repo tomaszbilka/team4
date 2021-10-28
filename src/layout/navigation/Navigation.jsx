@@ -1,26 +1,38 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import { LogoutButton } from '../../components';
+import Tabs from '@mui/material/Tabs';
+import LinkTab from '@mui/material/Tab';
+
+const linkStyle = {
+  textDecoration: 'none',
+  color: 'gray',
+};
+
+const wrapp = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+};
 
 const Header = ({ token, setAuthUser }) => {
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Kalendarz</Link>
-        </li>
-        <li>
-          <Link to="/bundle">Bundle</Link>
-        </li>
-        <li>
-          <Link to="/settings">Ustawienia</Link>
-        </li>
-        <li>
-          <LogoutButton setAuthUser={setAuthUser} token={token} />
-        </li>
-      </ul>
-    </nav>
+    <>
+      <div style={wrapp}>
+        <Tabs aria-label="nav tabs example" style={{ position: 'relative' }}>
+          <Link to="/" style={linkStyle}>
+            <LinkTab label="Kalendarz" />
+          </Link>
+          <Link to="/bundle" style={linkStyle}>
+            <LinkTab label="Bundle" />
+          </Link>
+          <Link to="/settings" style={linkStyle}>
+            <LinkTab label="Ustawienia" />
+          </Link>
+        </Tabs>
+        <LogoutButton setAuthUser={setAuthUser} token={token} />
+      </div>
+    </>
   );
 };
 

@@ -3,13 +3,10 @@ import AddBundle from '../../components/addBoundle/addBundle';
 import { Link } from 'react-router-dom';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import classes from './bundle.module.css';
+import { Button } from '@mui/material';
 
 const btnStyle = {
-  padding: '8px 20px',
-  borderRadius: '10px',
-  cursor: 'pointer',
-  height: '40px',
-  marginLeft: '60px',
+  marginLeft: '65px',
 };
 
 const GET_ALL_BUNDLES = gql`
@@ -72,9 +69,9 @@ const Bundle = () => {
       <div>
         <div className={classes.headerStyle}>
           <h2>Bundles:</h2>
-          <button onClick={addBtnHandler} style={btnStyle}>
+          <Button variant="contained" onClick={addBtnHandler} style={btnStyle}>
             ADD
-          </button>
+          </Button>
         </div>
         {noRepetitionBundle.map((singleBundle) => {
           return (

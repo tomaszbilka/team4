@@ -24,7 +24,9 @@ function App({ token }) {
 
       {authUser && (
         <div className="App">
-          <Navigation token={token} setAuthUser={setAuthUser} />
+          <Card>
+            <Navigation token={token} setAuthUser={setAuthUser} />
+          </Card>
           <Card>
             <Switch>
               <Route path="/settings" component={Settings} />

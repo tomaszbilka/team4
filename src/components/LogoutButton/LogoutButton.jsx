@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@mui/material';
 
 import { removeFromLocalStorage } from '../../utils/localStorage';
 
@@ -9,7 +10,11 @@ const LogoutButton = ({ token, setAuthUser }) => {
     setAuthUser(null);
   };
 
-  return <button onClick={handleButtonClick}>Log Out</button>;
+  return (
+    <Button variant="contained" onClick={handleButtonClick}>
+      Log Out
+    </Button>
+  );
 };
 
 export default LogoutButton;
