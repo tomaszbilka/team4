@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Box } from '@mui/material';
+/* eslint-disable */
 
 import { CalendarForm } from '../../components';
 
@@ -21,6 +22,7 @@ const getTimeStamp = () => {
 const getValidInitialValue = (value) => value || '';
 
 const Calendar = () => {
+  const [entries, setEntries] = useState([]);
   const [today, setToday] = useState(getTimeStamp());
   const { removeEntryById } = useRemoveEntryById();
   const { createNewEntry } = useCreateNewEntry();
@@ -53,8 +55,8 @@ const Calendar = () => {
     );
     const entriesToBeUpdated = data?.entryMany?.slice(indexOfCurrentEntry + 1);
 
-    entriesToBeUpdated.map(({ _id, order: orderToBeUpdated, tag }) => {
-      updateEntryById({
+    entriesToBeUpdated.map(async ({ _id, order: orderToBeUpdated, tag }) => {
+      await updateEntryById({
         variables: {
           id: _id,
           record: {
@@ -76,6 +78,16 @@ const Calendar = () => {
     });
   };
 
+  useEffect(() => {
+    const entriesList = data?.entryMany && [...data?.entryMany];
+
+    entriesList &&
+      entriesList.sort(
+        ({ order: orderA }, { order: orderB }) => orderA - orderB
+      ) &&
+      setEntries(entriesList);
+  }, [data]);
+
   return (
     <div>
       <button onClick={() => handleDateButtonClick(-1)}>Prev</button>
@@ -88,7 +100,7 @@ const Calendar = () => {
       </h1>
       <button onClick={() => handleDateButtonClick(1)}>Next</button>
       <Container direction="column">
-        {data?.entryMany?.map(({ _id, order, tag, startTime, endTime }) => (
+        {entries.map(({ _id, order, tag, startTime, endTime }) => (
           <Box key={_id} m={2}>
             <CalendarForm
               date={today.toISOString()}
