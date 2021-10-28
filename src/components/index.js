@@ -1,3 +1,4 @@
 import LogoutButton from './LogoutButton';
+import CalendarForm from './CalendarForm';
 
-export { LogoutButton };
+export { LogoutButton, CalendarForm };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { setUserForLocalStorage } from '../../utils/localStorage';
+import { setToLocalStorage } from '../../utils/localStorage';
 
 const Login = ({ token, setAuthUser }) => {
   const [inputValue, setInputValue] = useState('');
@@ -8,7 +8,7 @@ const Login = ({ token, setAuthUser }) => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    setUserForLocalStorage(token, inputValue);
+    setToLocalStorage(token, inputValue);
     setAuthUser(inputValue);
   };
 

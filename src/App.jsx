@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { Navigation } from './layout';
-import { Calendar, Bundle, Settings, Login } from './Screens';
+import { Calendar, Bundle, Settings, Login } from './pages';
 
-import { useGetUser } from './queries';
+import { useGetUser } from './api';
 
 function App({ token }) {
   const { username, loading } = useGetUser();

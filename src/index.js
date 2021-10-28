@@ -10,7 +10,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
-import { getUserFromLocalStorage } from './utils/localStorage';
+import { getFromLocalStorage } from './utils/localStorage';
 
 const localStorageToken = 'wos-user';
 
@@ -19,7 +19,7 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = getUserFromLocalStorage(localStorageToken);
+  const token = getFromLocalStorage(localStorageToken);
 
   if (token) {
     return {
