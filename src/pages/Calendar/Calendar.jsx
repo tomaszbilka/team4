@@ -3,7 +3,6 @@ import {
   Container,
   Box,
   Button,
-  TextField,
   Tooltip,
   ClickAwayListener,
   IconButton,
@@ -13,11 +12,9 @@ import {
   StopCircle,
   AddCircleRounded,
   DeleteForeverRounded,
-  KeyboardArrowLeftRounded,
-  KeyboardArrowRightRounded,
 } from '@mui/icons-material';
 
-import { CalendarForm } from '../../components';
+import { CalendarForm, DateController } from '../../components';
 
 import {
   useGetEntries,
@@ -151,21 +148,12 @@ const Calendar = () => {
 
   return (
     <div>
-      <Box sx={{ display: 'flex' }}>
-        <IconButton onClick={() => handleDateButtonClick(-1)}>
-          <KeyboardArrowLeftRounded color="info" />
-        </IconButton>
-        <h1>
-          {today?.toLocaleDateString('pl-pl', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </h1>
-        <IconButton onClick={() => handleDateButtonClick(1)}>
-          <KeyboardArrowRightRounded color="info" />
-        </IconButton>
-      </Box>
+      <DateController
+        setPreviousDay={() => handleDateButtonClick(-1)}
+        setNextDay={() => handleDateButtonClick(1)}
+        today={today}
+        setToday={setToday}
+      />
       <Container direction="column">
         <IconButton
           onClick={handleAddNewEntryButtonClick(entries[0]?.order - 1)}
@@ -189,17 +177,6 @@ const Calendar = () => {
             </IconButton>
           </Tooltip>
         </ClickAwayListener>
-        <TextField
-          id="date"
-          name="date"
-          type="date"
-          value={today.toISOString().split('T')[0]}
-          onChange={(e) => setToday(new Date(e.target.value))}
-          sx={{ width: 220 }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
         {entries.map(({ _id, order, tag, startTime, endTime }) => (
           <Box key={_id} m={2}>
             <CalendarForm
