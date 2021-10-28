@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Box } from '@mui/material';
 
-import { useGetEntries } from '../../queries';
 import { CalendarForm } from '../../components';
+
+import { useGetEntries } from '../../queries';
+import { useRemoveEntryById } from '../../mutations';
 
 const getTimeStamp = () => {
   const timeStamp = new Date();
@@ -16,6 +18,7 @@ const getValidInitialValue = (value) => value || '';
 
 const Calendar = () => {
   const [today, setToday] = useState(getTimeStamp());
+  const { removeEntryById } = useRemoveEntryById();
   const { data } = useGetEntries({
     date: today,
   });
@@ -26,6 +29,14 @@ const Calendar = () => {
       newDate.setDate(newDate.getDate() + direction);
 
       return newDate;
+    });
+  };
+
+  const handleEntryRemove = (id) => () => {
+    removeEntryById({
+      variables: {
+        id,
+      },
     });
   };
 
@@ -53,7 +64,7 @@ const Calendar = () => {
               id={_id}
             />
             <button>Add new</button>
-            <button>Remove</button>
+            <button onClick={handleEntryRemove(_id)}>Remove</button>
           </Box>
         ))}
       </Container>
