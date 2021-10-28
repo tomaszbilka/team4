@@ -1,7 +1,7 @@
 import useGetUser from './useGetUser';
-import useGetEntries from './useGetEntries';
+import useGetEntries, { ENTRY_QUERY } from './useGetEntries';
 import useGetTagsByBundle from './useGetTagsByBundle';
-import useGetTagBundles from './useGetTagBundles';
+import useGetTagBundles, { GET_TAG_BUNDLES } from './useGetTagBundles';
 import useGetProfileBundles from './useGetProfileBundles';
 
 export {
@@ -10,4 +10,6 @@ export {
   useGetTagBundles,
   useGetTagsByBundle,
   useGetProfileBundles,
+  ENTRY_QUERY,
+  GET_TAG_BUNDLES,
 };
