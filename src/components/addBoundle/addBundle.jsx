@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button } from '@mui/material';
 
 const AddBundle = (props) => {
   const [newBundle, setNewBundle] = useState('');
@@ -57,9 +58,12 @@ const AddBundle = (props) => {
             type="text"
             value={newBundle}
             onChange={inputNewBundleHandler}
+            style={{ marginBottom: '20px' }}
           ></input>
           {isNotEmpty && <p>Can not be empty!</p>}
-          <button onClick={addNewBundle}>Add</button>
+          <Button variant="contained" onClick={addNewBundle}>
+            ADD
+          </Button>
         </div>
       </div>
     </>
