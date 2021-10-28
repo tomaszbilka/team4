@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
-import { Container, Box, Button, TextField } from '@mui/material';
+import {
+  Container,
+  Box,
+  Button,
+  TextField,
+  Tooltip,
+  ClickAwayListener,
+  IconButton,
+} from '@mui/material';
+import {
+  ContentCopy,
+  StopCircle,
+  AddCircleRounded,
+  DeleteForeverRounded,
+  KeyboardArrowLeftRounded,
+  KeyboardArrowRightRounded,
+} from '@mui/icons-material';
 
 import { CalendarForm } from '../../components';
 
@@ -22,7 +38,7 @@ const Calendar = () => {
   const [onlyFullForm, setOnlyFullForm] = useState(
     getFromLocalStorage(onlyFullFormToken)
   );
-  const [clipboardError, setClipboardError] = useState('');
+  const [clipboardSuccess, setClipboardSuccess] = useState(false);
   const [today, setToday] = useState(getTimeStamp());
   const { removeEntryById } = useRemoveEntryById();
   const { createNewEntry } = useCreateNewEntry();
@@ -115,40 +131,64 @@ const Calendar = () => {
     }
   };
 
+  console.log(clipboardSuccess);
+
   const handleCopyToClipboard = () => {
     const dataToClipboard = entries
       .map(({ startTime, endTime, tag }) => {
         if (!startTime || !endTime || !tag?.tagBundle?.name || !tag?.name) {
-          setClipboardError('Please fill all filed before action');
+          return 'Entry is missing some fields';
         }
         return `${startTime} ${endTime} ${tag?.tagBundle?.name}-${tag?.name}`;
       })
       .join('\n');
 
-    if (!clipboardError) {
-      navigator.clipboard
-        .writeText(dataToClipboard)
-        .then(() => console.log('success'))
-        .catch((err) => console.log(err));
-    }
+    navigator.clipboard
+      .writeText(dataToClipboard)
+      .then(() => setClipboardSuccess(true))
+      .catch((err) => console.log(err));
   };
 
   return (
     <div>
-      <button onClick={() => handleDateButtonClick(-1)}>Prev</button>
-      <h1>
-        {today?.toLocaleDateString('pl-pl', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </h1>
-      <button onClick={() => handleDateButtonClick(1)}>Next</button>
+      <Box sx={{ display: 'flex' }}>
+        <IconButton onClick={() => handleDateButtonClick(-1)}>
+          <KeyboardArrowLeftRounded color="info" />
+        </IconButton>
+        <h1>
+          {today?.toLocaleDateString('pl-pl', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </h1>
+        <IconButton onClick={() => handleDateButtonClick(1)}>
+          <KeyboardArrowRightRounded color="info" />
+        </IconButton>
+      </Box>
       <Container direction="column">
-        <button onClick={handleAddNewEntryButtonClick(entries[0]?.order - 1)}>
-          Add new
-        </button>
-        <Button onClick={handleCopyToClipboard}>Copy to clipboard</Button>
+        <IconButton
+          onClick={handleAddNewEntryButtonClick(entries[0]?.order - 1)}
+        >
+          <AddCircleRounded color="success" />
+        </IconButton>
+        <ClickAwayListener onClickAway={() => setClipboardSuccess(false)}>
+          <Tooltip
+            PopperProps={{
+              disablePortal: true,
+            }}
+            onClose={() => setClipboardSuccess(false)}
+            open={clipboardSuccess}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+            title="Skopiowano do schowka"
+          >
+            <IconButton onClick={handleCopyToClipboard}>
+              <ContentCopy />
+            </IconButton>
+          </Tooltip>
+        </ClickAwayListener>
         <TextField
           id="date"
           name="date"
@@ -172,15 +212,23 @@ const Calendar = () => {
               tagName={getValidInitialValue(tag?.name)}
               startTime={getValidInitialValue(startTime)}
             />
-            <button onClick={handleAddNewEntryButtonClick(order)}>
-              Add new
-            </button>
-            <button onClick={handleEntryRemove(_id)}>Remove</button>
+            <IconButton onClick={handleAddNewEntryButtonClick(order)}>
+              <AddCircleRounded color="success" />
+            </IconButton>
+            <IconButton onClick={handleEntryRemove(_id)}>
+              <DeleteForeverRounded color="error" />
+            </IconButton>
           </Box>
         ))}
-        <Button variant="contained" onClick={handlePauseButtonClick}>
-          PAUSE
-        </Button>
+        <Tooltip title="Add new entry with current time">
+          <IconButton disabled={onlyFullForm} onClick={handlePauseButtonClick}>
+            <StopCircle
+              color={onlyFullForm ? 'disabled' : 'info'}
+              style={{ fontSize: '50px' }}
+              fontSize="inherit"
+            />
+          </IconButton>
+        </Tooltip>
       </Container>
       <div>
         <Button

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { CircularProgress, Grid } from '@mui/material';
 
 import { Navigation } from './layout';
 import { Calendar, Bundle, Settings, Login } from './pages';
@@ -16,10 +17,23 @@ function App({ token }) {
     setAuthUser(username);
   }, [username]);
 
+  if (loading) {
+    return (
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        style={{ minHeight: '100vh' }}
+      >
+        <CircularProgress />;
+      </Grid>
+    );
+  }
+
   return (
     <Router>
-      {loading && <div>Loading...</div>}
-
       {!authUser && <Login token={token} setAuthUser={setAuthUser} />}
 
       {authUser && (
