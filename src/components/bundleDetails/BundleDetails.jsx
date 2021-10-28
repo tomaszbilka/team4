@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import Pagination from '../pagination/Pagination';
 import { Link } from 'react-router-dom';
+import { Button } from '@mui/material';
+import { TextField } from '@mui/material';
 
 const wrap = {
   border: '1px solid black',
@@ -24,10 +26,7 @@ const container = {
 };
 
 const backBtn = {
-  border: '1px solid black',
-  borderRadius: '4px',
-  color: '#000',
-  padding: '5px 10px',
+  color: '#fff',
   textDecoration: 'none',
 };
 
@@ -166,19 +165,32 @@ const BundleDetails = () => {
             )}
             {isDescriptionOpen && isMatchBundleToUser && (
               <div style={descriptionStyle}>
-                <textarea
+                <TextField
+                  id="outlined-textarea"
+                  label="Multiline Placeholder"
+                  placeholder="Placeholder"
                   type="text"
                   value={updatedBundle}
                   onChange={descriptionChangeHandler}
+                  multiline
                 />
+
+                {/* <textarea
+                  type="text"
+                  value={updatedBundle}
+                  onChange={descriptionChangeHandler}
+                /> */}
                 <button onClick={updateBundleHandler}>update</button>
                 <button onClick={closeBundleHandler}>close</button>
               </div>
             )}
           </div>
-          <Link to="/bundle" style={backBtn}>
-            BACK
-          </Link>
+
+          <Button variant="contained">
+            <Link to="/bundle" style={backBtn}>
+              BACK
+            </Link>
+          </Button>
         </div>
         <Pagination />
       </div>
