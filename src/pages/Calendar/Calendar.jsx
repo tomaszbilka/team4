@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Button } from '@mui/material';
-import Stack from '@mui/material/Stack';
+import { Container, Box, Button, Stack } from '@mui/material';
 
 import { CalendarForm } from '../../components';
 
