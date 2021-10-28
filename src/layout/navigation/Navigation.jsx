@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { LogoutButton } from '../../components';
 import Tabs from '@mui/material/Tabs';
 import LinkTab from '@mui/material/Tab';
+import { Typography } from '@mui/material';
 
 const linkStyle = {
   textDecoration: 'none',
@@ -15,6 +16,7 @@ const wrapp = {
   alignItems: 'center',
 };
 
+const user = localStorage.getItem('wos-user');
 const Header = ({ token, setAuthUser }) => {
   return (
     <>
@@ -30,6 +32,7 @@ const Header = ({ token, setAuthUser }) => {
             <LinkTab label="Ustawienia" />
           </Link>
         </Tabs>
+        <Typography>Planer | {JSON.parse(user)}</Typography>
         <LogoutButton setAuthUser={setAuthUser} token={token} />
       </div>
     </>
