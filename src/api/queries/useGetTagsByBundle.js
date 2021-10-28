@@ -14,6 +14,7 @@ export const GET_TAGS_BY_BUNDLE = gql`
 const useGetTagsByBundle = () => {
   const [getBundleTags, { data, loading }] = useLazyQuery(GET_TAGS_BY_BUNDLE, {
     fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
   });
 
   const tagList = data?.tagBundleById?.tags?.map(({ name }) => name);

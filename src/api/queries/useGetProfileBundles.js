@@ -13,7 +13,10 @@ export const GET_PROFILE_BUNDLE_TAGS = gql`
 `;
 
 const useGetProfileBundles = () => {
-  const { loading, data, error } = useQuery(GET_PROFILE_BUNDLE_TAGS);
+  const { loading, data, error } = useQuery(GET_PROFILE_BUNDLE_TAGS, {
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
+  });
   const MYBUNDLE = data?.getProfile?.tagBundles || [];
 
   return { data: MYBUNDLE, loading, error };
