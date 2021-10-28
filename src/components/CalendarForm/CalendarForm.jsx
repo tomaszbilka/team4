@@ -27,24 +27,31 @@ const CalendarForm = ({
   const { updateEntryById } = useUpdateEntry();
   const { data } = useGetTagBundles();
   const { bundleTags, getBundleTags } = useGetTagsByBundle();
-  const { values, errors, touched, handleChange, handleSubmit, setFieldValue } =
-    useFormik({
-      initialValues,
-      validationSchema: allowOnlyFullForm ? validationSchema : null,
-      onSubmit: (values) => {
-        if (!_isEqual(values, initialValues)) {
-          updateEntryById({
-            variables: {
-              id,
-              record: {
-                date,
-                ...values,
-              },
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    setFieldValue,
+  } = useFormik({
+    initialValues,
+    validationSchema: allowOnlyFullForm ? validationSchema : null,
+    onSubmit: (values) => {
+      if (!_isEqual(values, initialValues)) {
+        updateEntryById({
+          variables: {
+            id,
+            record: {
+              date,
+              ...values,
             },
-          });
-        }
-      },
-    });
+          },
+        });
+      }
+    },
+  });
 
   const handleTagBundleChange = (e) => {
     setFieldValue('tagName', '');
@@ -53,6 +60,20 @@ const CalendarForm = ({
 
   const handleAutocompleteOnBlur = async (e) => {
     await setFieldValue(e.target.name, e.target.value);
+    handleSubmit(e);
+  };
+
+  const customHandleSubmit = (e) => {
+    if (allowOnlyFullForm) {
+      handleBlur(e);
+
+      for (let valueKey in values) {
+        if (!values[valueKey]) {
+          return;
+        }
+      }
+    }
+
     handleSubmit(e);
   };
 
@@ -70,7 +91,7 @@ const CalendarForm = ({
           value={values.startTime}
           error={touched.startTime && Boolean(errors.startTime)}
           onChange={handleChange}
-          onBlur={handleSubmit}
+          onBlur={customHandleSubmit}
           inputProps={{
             step: 60,
           }}
@@ -82,7 +103,7 @@ const CalendarForm = ({
           value={values.endTime}
           error={touched.endTime && Boolean(errors.endTime)}
           onChange={handleChange}
-          onBlur={handleSubmit}
+          onBlur={customHandleSubmit}
           inputProps={{
             step: 60,
           }}
@@ -92,12 +113,14 @@ const CalendarForm = ({
           id="tagBundleName"
           value={values.tagBundleName}
           onChange={handleTagBundleChange}
+          onBlur={allowOnlyFullForm && customHandleSubmit}
           error={touched.tagBundleName && Boolean(errors.tagBundleName)}
           sx={{ width: 150 }}
         >
           {data?.tagBundleMany?.map(({ name, _id: id }) => (
             <MenuItem
               onBlur={() => getBundleTags({ variables: { id } })}
+              error={touched.tagBundleName && Boolean(errors.tagBundleName)}
               key={id}
               value={name}
             >
