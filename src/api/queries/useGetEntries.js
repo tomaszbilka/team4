@@ -1,8 +1,11 @@
 import { gql, useQuery } from '@apollo/client';
 
 export const ENTRY_QUERY = gql`
-  query GetEntries($filter: FilterFindManyEntryInput) {
-    entryMany(filter: $filter) {
+  query GetEntries(
+    $filter: FilterFindManyEntryInput
+    $sort: SortFindManyEntryInput
+  ) {
+    entryMany(filter: $filter, sort: $sort) {
       _id
       startTime
       endTime
@@ -21,9 +24,12 @@ export const ENTRY_QUERY = gql`
 `;
 
 const useGetEntries = (filter = {}) => {
-  const { data, loading } = useQuery(ENTRY_QUERY, { variables: { filter } });
+  const { data, loading } = useQuery(ENTRY_QUERY, {
+    variables: { filter, sort: 'ORDER_ASC' },
+    fetchPolicy: 'network-only',
+  });
 
-  return { data, loading };
+  return { entries: data?.entryMany || [], loading };
 };
 
 export default useGetEntries;
