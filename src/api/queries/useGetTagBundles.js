@@ -14,7 +14,10 @@ export const GET_TAG_BUNDLES = gql`
 `;
 
 const useGetTagBundles = () => {
-  const { data, loading } = useQuery(GET_TAG_BUNDLES);
+  const { data, loading } = useQuery(GET_TAG_BUNDLES, {
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
+  });
 
   return { data, loading };
 };
