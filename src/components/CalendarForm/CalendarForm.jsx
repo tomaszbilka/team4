@@ -4,8 +4,11 @@ import _isEqual from 'lodash/isEqual';
 import { Grid, TextField, Select, MenuItem, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 
-import { useUpdateEntry } from '../../mutations';
-import { useGetTagBundles, useGetTagsByBundle } from '../../queries';
+import {
+  useUpdateEntry,
+  useGetTagBundles,
+  useGetTagsByBundle,
+} from '../../api';
 
 const validationSchema = yup.object({
   startTime: yup.string().required(),

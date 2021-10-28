@@ -3,27 +3,18 @@ import { Container, Box, Button } from '@mui/material';
 
 import { CalendarForm } from '../../components';
 
-import { useGetEntries } from '../../queries';
 import {
+  useGetEntries,
   useRemoveEntryById,
   useCreateNewEntry,
   useUpdateEntry,
-} from '../../mutations';
+} from '../../api';
 
 import {
   getFromLocalStorage,
   setToLocalStorage,
 } from '../../utils/localStorage';
-
-const getTimeStamp = () => {
-  const timeStamp = new Date();
-
-  timeStamp.setHours(2, 0, 0, 0, 0);
-
-  return timeStamp;
-};
-
-const getValidInitialValue = (value) => value || '';
+import { getTimeStamp, getValidInitialValue } from '../../utils/shared';
 
 const onlyFullFormToken = 'wos.only.full.form';
 
