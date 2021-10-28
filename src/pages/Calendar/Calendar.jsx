@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Button } from '@mui/material';
+import Stack from '@mui/material/Stack';
 
 import { CalendarForm } from '../../components';
 
@@ -97,15 +98,21 @@ const Calendar = () => {
 
   return (
     <div>
-      <button onClick={() => handleDateButtonClick(-1)}>Prev</button>
-      <h1>
-        {today?.toLocaleDateString('pl-pl', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </h1>
-      <button onClick={() => handleDateButtonClick(1)}>Next</button>
+      <Stack direction="row" spacing={4}>
+        <Button variant="contained" onClick={() => handleDateButtonClick(-1)}>
+          Prev
+        </Button>
+        <h1>
+          {today?.toLocaleDateString('pl-pl', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </h1>
+        <Button variant="contained" onClick={() => handleDateButtonClick(1)}>
+          Next
+        </Button>
+      </Stack>
       <Container direction="column">
         {entries.map(({ _id, order, tag, startTime, endTime }) => (
           <Box key={_id} m={2}>
@@ -119,28 +126,38 @@ const Calendar = () => {
               tagName={getValidInitialValue(tag?.name)}
               startTime={getValidInitialValue(startTime)}
             />
-            <button onClick={handleAddNewEntryButtonClick(order)}>
-              Add new
-            </button>
-            <button onClick={handleEntryRemove(_id)}>Remove</button>
+            <br />
+            <Stack direction="row" spacing={4}>
+              <Button
+                variant="contained"
+                onClick={handleAddNewEntryButtonClick(order)}
+              >
+                Add new
+              </Button>
+              <Button variant="contained" onClick={handleEntryRemove(_id)}>
+                Remove
+              </Button>
+            </Stack>
           </Box>
         ))}
       </Container>
       <div>
-        <Button
-          variant="contained"
-          disabled={onlyFullForm}
-          onClick={handleOnlyFullFormButtonClick}
-        >
-          Accept only full form
-        </Button>
-        <Button
-          variant="contained"
-          disabled={!onlyFullForm}
-          onClick={handleOnlyFullFormButtonClick}
-        >
-          Accept partially filled form
-        </Button>
+        <Stack direction="row" spacing={4}>
+          <Button
+            variant="contained"
+            disabled={onlyFullForm}
+            onClick={handleOnlyFullFormButtonClick}
+          >
+            Accept only full form
+          </Button>
+          <Button
+            variant="contained"
+            disabled={!onlyFullForm}
+            onClick={handleOnlyFullFormButtonClick}
+          >
+            Accept partially filled form
+          </Button>
+        </Stack>
       </div>
     </div>
   );
