@@ -1,9 +1,9 @@
-export const getUserFromLocalStorage = (token) => {
+export const getFromLocalStorage = (token) => {
   if (window) {
     try {
-      const username = window.localStorage.getItem(token);
+      const data = JSON.parse(window.localStorage.getItem(token));
 
-      return username || null;
+      return data || null;
     } catch (err) {
       console.error(err);
 
@@ -12,17 +12,17 @@ export const getUserFromLocalStorage = (token) => {
   }
 };
 
-export const setUserForLocalStorage = (token, username) => {
+export const setToLocalStorage = (token, payload) => {
   if (window) {
     try {
-      window.localStorage.setItem(token, username);
+      window.localStorage.setItem(token, JSON.stringify(payload));
     } catch (err) {
       console.error(err);
     }
   }
 };
 
-export const removeUserFromLocalStorage = (token) => {
+export const removeFromLocalStorage = (token) => {
   if (window) {
     try {
       window.localStorage.removeItem(token);

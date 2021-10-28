@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box } from '@mui/material';
-/* eslint-disable */
+import { Container, Box, Button } from '@mui/material';
 
 import { CalendarForm } from '../../components';
 
@@ -10,6 +9,11 @@ import {
   useCreateNewEntry,
   useUpdateEntry,
 } from '../../mutations';
+
+import {
+  getFromLocalStorage,
+  setToLocalStorage,
+} from '../../utils/localStorage';
 
 const getTimeStamp = () => {
   const timeStamp = new Date();
@@ -21,7 +25,12 @@ const getTimeStamp = () => {
 
 const getValidInitialValue = (value) => value || '';
 
+const onlyFullFormToken = 'wos.only.full.form';
+
 const Calendar = () => {
+  const [onlyFullForm, setOnlyFullForm] = useState(
+    getFromLocalStorage(onlyFullFormToken)
+  );
   const [entries, setEntries] = useState([]);
   const [today, setToday] = useState(getTimeStamp());
   const { removeEntryById } = useRemoveEntryById();
@@ -78,6 +87,13 @@ const Calendar = () => {
     });
   };
 
+  const handleOnlyFullFormButtonClick = () =>
+    setOnlyFullForm((prevState) => {
+      setToLocalStorage(onlyFullFormToken, !prevState);
+
+      return !prevState;
+    });
+
   useEffect(() => {
     const entriesList = data?.entryMany && [...data?.entryMany];
 
@@ -103,6 +119,7 @@ const Calendar = () => {
         {entries.map(({ _id, order, tag, startTime, endTime }) => (
           <Box key={_id} m={2}>
             <CalendarForm
+              allowOnlyFullForm={onlyFullForm}
               date={today.toISOString()}
               endTime={getValidInitialValue(endTime)}
               id={_id}
@@ -118,6 +135,22 @@ const Calendar = () => {
           </Box>
         ))}
       </Container>
+      <div>
+        <Button
+          variant="contained"
+          disabled={onlyFullForm}
+          onClick={handleOnlyFullFormButtonClick}
+        >
+          Accept only full form
+        </Button>
+        <Button
+          variant="contained"
+          disabled={!onlyFullForm}
+          onClick={handleOnlyFullFormButtonClick}
+        >
+          Accept partially filled form
+        </Button>
+      </div>
     </div>
   );
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { removeUserFromLocalStorage } from '../../utils/localStorage';
+import { removeFromLocalStorage } from '../../utils/localStorage';
 
 const LogoutButton = ({ token, setAuthUser }) => {
   const handleButtonClick = () => {
-    removeUserFromLocalStorage(token);
+    removeFromLocalStorage(token);
 
     setAuthUser(null);
   };

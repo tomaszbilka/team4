@@ -1,18 +1,33 @@
 import React, { useEffect } from 'react';
+import * as yup from 'yup';
+import _isEqual from 'lodash/isEqual';
 import { Grid, TextField, Select, MenuItem, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import _isEqual from 'lodash/isEqual';
 
 import { useUpdateEntry } from '../../mutations';
 import { useGetTagBundles, useGetTagsByBundle } from '../../queries';
 
-const CalendarForm = ({ id, date, tagBundleId, ...initialValues }) => {
+const validationSchema = yup.object({
+  startTime: yup.string().required(),
+  endTime: yup.string().required(),
+  tagName: yup.string().required(),
+  tagBundleName: yup.string().required(),
+});
+
+const CalendarForm = ({
+  id,
+  date,
+  tagBundleId,
+  allowOnlyFullForm,
+  ...initialValues
+}) => {
   const { updateEntryById } = useUpdateEntry();
   const { data } = useGetTagBundles();
   const { bundleTags, getBundleTags } = useGetTagsByBundle();
   const { values, errors, touched, handleChange, handleSubmit, setFieldValue } =
     useFormik({
       initialValues,
+      validationSchema: allowOnlyFullForm ? validationSchema : null,
       onSubmit: (values) => {
         if (!_isEqual(values, initialValues)) {
           updateEntryById({
