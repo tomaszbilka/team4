@@ -92,6 +92,7 @@ const CalendarForm = ({
           id="tagBundleName"
           value={values.tagBundleName}
           onChange={handleTagBundleChange}
+          error={touched.tagBundleName && Boolean(errors.tagBundleName)}
           sx={{ width: 150 }}
         >
           {data?.tagBundleMany?.map(({ name, _id: id }) => (
