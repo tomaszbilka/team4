@@ -28,9 +28,9 @@ const Settings = () => {
     return item;
   });
 
-  const toggleItem = (sBundle) => () => {
-    console.log(sBundle);
+  const user = localStorage.getItem('wos-user');
 
+  const toggleItem = (sBundle) => () => {
     if (sBundle.isChecked) {
       removeBundleId({
         variables: {
@@ -44,44 +44,9 @@ const Settings = () => {
         },
       });
     }
-    // const arr = [...bundle];
-    // console.log(arr);
-    // eslint-disable-next-line no-unused-vars
-    // const index = arr.find((item) => {
-    //   return item.id == sBundle.id;
-    // });
-    // console.log(index);
-    // if (index > -1) {
-    //   console.log(arr[index]);
-    //   arr[index] = { ...arr[index], isChecked: !arr[index].isChecked };
-    //   console.log(arr);
-    //   setBundle(arr);
-    // }
-    // console.log(setBundle());
-
-    console.log(sBundle);
   };
 
   return (
-    // <div>
-    //   <ul>
-    //     {answerData?.map((item) => {
-    //       return (
-    //         <li key={item._id}>
-    //           {item.id}
-    //           <input
-    //             type="checkbox"
-    //             name=""
-    //             id=""
-    //             checked={item.isChecked}
-    //             onChange={toggleItem(item)}
-    //           />
-    //           <label htmlFor="">{item.name}</label>
-    //         </li>
-    //       );
-    //     })}
-    //   </ul>
-    // </div>
     <Box
       sx={{
         bgcolor: 'background.paper',
@@ -93,8 +58,9 @@ const Settings = () => {
     >
       <Box sx={{ color: 'text.secondary' }}>Nazwa Użytkownika</Box>
       <Box sx={{ color: 'text.primary', fontSize: 24, fontWeight: 'medium' }}>
-        USER NAME TEST
+        {JSON.parse(user)}
       </Box>
+      <hr />
       <Box sx={{ color: 'text.secondary' }}>Użytkowane Bundle</Box>
 
       <Box sx={{ color: 'success.dark', fontSize: 16, verticalAlign: 'sub' }} />
