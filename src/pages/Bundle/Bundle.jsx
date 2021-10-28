@@ -25,11 +25,12 @@ const Bundle = () => {
     setIsAddBundleVisible(false);
   };
 
-  const addNewBundleItem = (addNewBundle) => {
+  const addNewBundleItem = ({ name, description }) => {
     createNewBundle({
       variables: {
         record: {
-          name: addNewBundle,
+          name,
+          description,
         },
       },
     });
