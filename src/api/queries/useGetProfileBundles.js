@@ -6,6 +6,10 @@ export const GET_PROFILE_BUNDLE_TAGS = gql`
       tagBundles {
         name
         _id
+        tags {
+          name
+          _id
+        }
       }
       _id
     }
