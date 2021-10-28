@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Box, Button } from '@mui/material';
+import { Container, Box, Button, TextField } from '@mui/material';
 
 import { CalendarForm } from '../../components';
 
@@ -22,6 +22,7 @@ const Calendar = () => {
   const [onlyFullForm, setOnlyFullForm] = useState(
     getFromLocalStorage(onlyFullFormToken)
   );
+  const [clipboardError, setClipboardError] = useState('');
   const [today, setToday] = useState(getTimeStamp());
   const { removeEntryById } = useRemoveEntryById();
   const { createNewEntry } = useCreateNewEntry();
@@ -84,6 +85,54 @@ const Calendar = () => {
       return !prevState;
     });
 
+  const handlePauseButtonClick = async () => {
+    const lastEntry = entries[entries.length - 1];
+    const timeStamp = new Date().toTimeString().split(':');
+    const newEndTime = `${timeStamp[0]}:${timeStamp[1]}`;
+    const { endTime: currentEndTime, tag } = lastEntry;
+
+    createNewEntry({
+      variables: {
+        record: {
+          order: lastEntry?.order + 1,
+          date: today,
+          startTime: currentEndTime ? currentEndTime : newEndTime,
+        },
+      },
+    });
+
+    if (!currentEndTime) {
+      updateEntryById({
+        variables: {
+          id: lastEntry?._id,
+          record: {
+            tagName: tag?.name,
+            tagBundleName: tag?.tagBundle?.name,
+            endTime: newEndTime,
+          },
+        },
+      });
+    }
+  };
+
+  const handleCopyToClipboard = () => {
+    const dataToClipboard = entries
+      .map(({ startTime, endTime, tag }) => {
+        if (!startTime || !endTime || !tag?.tagBundle?.name || !tag?.name) {
+          setClipboardError('Please fill all filed before action');
+        }
+        return `${startTime} ${endTime} ${tag?.tagBundle?.name}-${tag?.name}`;
+      })
+      .join('\n');
+
+    if (!clipboardError) {
+      navigator.clipboard
+        .writeText(dataToClipboard)
+        .then(() => console.log('success'))
+        .catch((err) => console.log(err));
+    }
+  };
+
   return (
     <div>
       <button onClick={() => handleDateButtonClick(-1)}>Prev</button>
@@ -99,6 +148,18 @@ const Calendar = () => {
         <button onClick={handleAddNewEntryButtonClick(entries[0]?.order - 1)}>
           Add new
         </button>
+        <Button onClick={handleCopyToClipboard}>Copy to clipboard</Button>
+        <TextField
+          id="date"
+          name="date"
+          type="date"
+          value={today.toISOString().split('T')[0]}
+          onChange={(e) => setToday(new Date(e.target.value))}
+          sx={{ width: 220 }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
         {entries.map(({ _id, order, tag, startTime, endTime }) => (
           <Box key={_id} m={2}>
             <CalendarForm
@@ -117,6 +178,9 @@ const Calendar = () => {
             <button onClick={handleEntryRemove(_id)}>Remove</button>
           </Box>
         ))}
+        <Button variant="contained" onClick={handlePauseButtonClick}>
+          PAUSE
+        </Button>
       </Container>
       <div>
         <Button

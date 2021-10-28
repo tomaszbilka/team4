@@ -37,6 +37,7 @@ const CalendarForm = ({
     setFieldValue,
   } = useFormik({
     initialValues,
+    enableReinitialize: true,
     validationSchema: allowOnlyFullForm ? validationSchema : null,
     onSubmit: (values) => {
       if (!_isEqual(values, initialValues)) {

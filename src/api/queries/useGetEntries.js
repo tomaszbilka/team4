@@ -26,6 +26,7 @@ export const ENTRY_QUERY = gql`
 const useGetEntries = (filter = {}) => {
   const { data, loading } = useQuery(ENTRY_QUERY, {
     variables: { filter, sort: 'ORDER_ASC' },
+    fetchPolicy: 'network-only',
   });
 
   return { entries: data?.entryMany || [], loading };
