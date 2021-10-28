@@ -6,7 +6,7 @@ import { useFormik } from 'formik';
 
 import {
   useUpdateEntry,
-  useGetTagBundles,
+  useGetProfileBundles,
   useGetTagsByBundle,
 } from '../../api';
 
@@ -25,7 +25,7 @@ const CalendarForm = ({
   ...initialValues
 }) => {
   const { updateEntryById } = useUpdateEntry();
-  const { data } = useGetTagBundles();
+  const { data: assignedBundles } = useGetProfileBundles();
   const { bundleTags, getBundleTags } = useGetTagsByBundle();
   const {
     values,
@@ -117,7 +117,7 @@ const CalendarForm = ({
           error={touched.tagBundleName && Boolean(errors.tagBundleName)}
           sx={{ width: 150 }}
         >
-          {data?.tagBundleMany?.map(({ name, _id: id }) => (
+          {assignedBundles?.map(({ name, _id: id }) => (
             <MenuItem
               onBlur={() => getBundleTags({ variables: { id } })}
               error={touched.tagBundleName && Boolean(errors.tagBundleName)}
