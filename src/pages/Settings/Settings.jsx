@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
+
 import {
   useGetTagBundles,
   useGetProfileBundles,
@@ -12,21 +13,11 @@ import {
 } from '../../api';
 
 const Settings = () => {
+  const [profileBundles, setProfileBundles] = useState([]);
   const { data: dataAll } = useGetTagBundles();
   const { data: myData } = useGetProfileBundles();
   const assignBundleId = useAssignBundle();
   const removeBundleId = useUnassignBundle();
-
-  const idFromMyData = myData?.map((item) => {
-    return item._id;
-  });
-
-  let answerData = dataAll?.tagBundleMany?.map((item) => {
-    if (idFromMyData?.includes(item._id)) {
-      return { ...item, isChecked: true };
-    }
-    return item;
-  });
 
   const user = localStorage.getItem('wos-user');
 
@@ -45,6 +36,21 @@ const Settings = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const idFromMyData = myData?.map((item) => {
+      return item._id;
+    });
+
+    const answerData = dataAll?.tagBundleMany?.map((item) => {
+      if (idFromMyData?.includes(item._id)) {
+        return { ...item, isChecked: true };
+      }
+      return item;
+    });
+
+    setProfileBundles(answerData);
+  }, [dataAll, myData]);
 
   return (
     <Box
@@ -72,7 +78,7 @@ const Settings = () => {
           mx: 0.5,
         }}
       >
-        {answerData?.map((item) => {
+        {profileBundles?.map((item) => {
           return (
             <FormGroup key={item._id}>
               <FormControlLabel

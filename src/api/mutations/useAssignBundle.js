@@ -13,7 +13,9 @@ const ASSIGN_BUNDLE = gql`
 
 const useAssignBundle = () => {
   const [assignBundleId] = useMutation(ASSIGN_BUNDLE, {
-    refetchQueries: [GET_PROFILE_BUNDLE_TAGS, 'GetMyBundleTags'],
+    refetchQueries: [GET_PROFILE_BUNDLE_TAGS, 'GetProfileBundleTags'],
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
   });
 
   return assignBundleId;

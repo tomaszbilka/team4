@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import classes from './pagination.module.css';
-import { gql, useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 
-const GET_ALL_BUNDLES = gql`
-  query tagBundleId($id: MongoID!) {
-    tagBundleById(_id: $id) {
-      tags {
-        name
-      }
-    }
-  }
-`;
+import { useGetBundleById } from '../../api';
 
 let items = [];
 
@@ -69,9 +60,7 @@ function PaginatedItems({ itemsPerPage }) {
 const Pagination = () => {
   const { id } = useParams();
 
-  const { data, loading, error } = useQuery(GET_ALL_BUNDLES, {
-    variables: { id: id },
-  });
+  const { data, loading } = useGetBundleById(id);
   const bundles = data?.tagBundleById.tags || [];
 
   const arrayBundles = bundles.map((el) => el.name);
@@ -79,7 +68,6 @@ const Pagination = () => {
   items = [...arrayBundles];
 
   if (loading) return <div>loading...</div>;
-  if (error) return <div>Oh no! Error!!</div>;
 
   return (
     <>

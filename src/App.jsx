@@ -6,11 +6,10 @@ import { Navigation } from './layout';
 import { Calendar, Bundle, Settings, Login } from './pages';
 
 import { useGetUser } from './api';
-import { BundleDetails } from './components/bundleDetails';
-import { Card } from './components/Card';
+import { Card, BundleDetails } from './components/';
 
 function App({ token }) {
-  const { username, loading } = useGetUser();
+  const { username, loading } = useGetUser({ auth: true });
   const [authUser, setAuthUser] = useState(null);
 
   useEffect(() => {

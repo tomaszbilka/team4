@@ -1,3 +1,1 @@
-import BundleDetails from './BundleDetails';
-
-export { BundleDetails };
+export { default } from './BundleDetails';

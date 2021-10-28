@@ -1,91 +1,35 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { gql, useQuery, useMutation } from '@apollo/client';
-import Pagination from '../pagination/Pagination';
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
-import { TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
-const wrap = {
-  border: '1px solid black',
-  borderRadius: '8px',
-  display: 'inline-block',
-  padding: '2px 50px 2px 10px',
-  position: 'relative',
-  minHeight: '450px',
-};
+import Pagination from '../Pagination/';
 
-const descriptionStyle = {
-  border: '1px solid black',
-  borderRadius: '4px',
-  padding: '10px',
-};
+import { getValidInitialValue } from '../../utils/shared';
 
-const container = {
-  display: 'flex',
-};
+import { useGetBundleById, useUpdateBundleById, useGetUser } from '../../api';
 
-const backBtn = {
-  color: '#fff',
-  textDecoration: 'none',
-};
-
-const GET_USER_ID = gql`
-  query getUserId {
-    getProfile {
-      _id
-    }
-  }
-`;
+import {
+  wrapperStyles,
+  descriptionStyles,
+  containerStyles,
+  backBtnStyles,
+} from './styles';
 
 const BundleDetails = () => {
   const { id } = useParams();
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
-
-  const GET_ONE_BUNDLE = gql`
-    query getBundleByID($id: MongoID!) {
-      tagBundleById(_id: $id) {
-        name
-        description
-        creatorId
-      }
-    }
-  `;
-
-  const UPDATE_USER_BUNDLE = gql`
-    mutation updateBundleById(
-      $id: MongoID!
-      $record: UpdateByIdTagBundleInput!
-    ) {
-      tagBundleUpdateById(_id: $id, record: $record) {
-        record {
-          description
-        }
-      }
-    }
-  `;
-
-  const { data, loading, error } = useQuery(GET_ONE_BUNDLE, {
-    variables: { id: id },
-  });
-
-  const {
-    data: userData,
-    loading: userLoading,
-    error: userError,
-  } = useQuery(GET_USER_ID);
-
-  const [updatedUserBundle] = useMutation(UPDATE_USER_BUNDLE, {
-    refetchQueries: [GET_ONE_BUNDLE, 'tagBundleById'],
-  });
+  const { data, loading } = useGetBundleById(id);
+  const { data: userData, loading: userLoading } = useGetUser({});
+  const { updateBundleById } = useUpdateBundleById();
 
   //when loading set name and description on empty string
-  const name = data?.tagBundleById?.name || '';
-  const description = data?.tagBundleById?.description || '';
-  const creatorId = data?.tagBundleById?.creatorId || '';
-  const userId = userData?.getProfile?._id || '';
+  const name = getValidInitialValue(data?.tagBundleById?.name);
+  const description = getValidInitialValue(data?.tagBundleById?.description);
+  const creatorId = getValidInitialValue(data?.tagBundleById?.creatorId);
+  const userId = getValidInitialValue(userData?.getProfile?._id);
 
-  const isMatchBundleToUser = creatorId === userId ? true : false;
+  const isMatchBundleToUser = creatorId === userId;
 
   const [updatedBundle, setUpdatedBundle] = useState(description);
 
@@ -97,8 +41,7 @@ const BundleDetails = () => {
 
   const updateBundleHandler = (event) => {
     event.preventDefault();
-    // console.log(updatedBundle);
-    updatedUserBundle({
+    updateBundleById({
       variables: {
         record: {
           description: updatedBundle,
@@ -118,14 +61,12 @@ const BundleDetails = () => {
   };
 
   if (loading) return <div>loading...</div>;
-  if (error) return <div>Upsss! Some error</div>;
   if (userLoading) return <div>loading...</div>;
-  if (userError) return <div>Upsss! Some error</div>;
 
   return (
     <>
-      <div style={container}>
-        <div style={wrap}>
+      <div style={containerStyles}>
+        <div style={wrapperStyles}>
           <h4>DETAILS</h4>
           <div>
             <h4>name:</h4>
@@ -134,7 +75,7 @@ const BundleDetails = () => {
           <div>
             <h4>description:</h4>
             {!isDescriptionOpen && (
-              <p style={descriptionStyle} onClick={changeDescriptionHandler}>
+              <p style={descriptionStyles} onClick={changeDescriptionHandler}>
                 {description}
               </p>
             )}
@@ -164,7 +105,7 @@ const BundleDetails = () => {
               </p>
             )}
             {isDescriptionOpen && isMatchBundleToUser && (
-              <div style={descriptionStyle}>
+              <div style={descriptionStyles}>
                 <TextField
                   id="outlined-textarea"
                   label="Multiline Placeholder"
@@ -174,12 +115,6 @@ const BundleDetails = () => {
                   onChange={descriptionChangeHandler}
                   multiline
                 />
-
-                {/* <textarea
-                  type="text"
-                  value={updatedBundle}
-                  onChange={descriptionChangeHandler}
-                /> */}
                 <button onClick={updateBundleHandler}>update</button>
                 <button onClick={closeBundleHandler}>close</button>
               </div>
@@ -187,7 +122,7 @@ const BundleDetails = () => {
           </div>
 
           <Button variant="contained">
-            <Link to="/bundle" style={backBtn}>
+            <Link to="/bundle" style={backBtnStyles}>
               BACK
             </Link>
           </Button>

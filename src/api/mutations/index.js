@@ -4,6 +4,7 @@ import useUpdateEntry from './useUpdateEntry';
 import useAssignBundle from './useAssignBundle';
 import useUnassignBundle from './useUnassignBundle';
 import useCreateNewBundle from './useCreateNewBundle';
+import useUpdateBundleById from './useUpdateBundleById';
 
 export {
   useRemoveEntryById,
@@ -12,4 +13,5 @@ export {
   useAssignBundle,
   useUnassignBundle,
   useCreateNewBundle,
+  useUpdateBundleById,
 };

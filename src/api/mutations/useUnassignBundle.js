@@ -13,7 +13,9 @@ const REMOVE_MUTATION = gql`
 
 const useUnassignBundle = () => {
   const [removeBundleId] = useMutation(REMOVE_MUTATION, {
-    refetchQueries: [GET_PROFILE_BUNDLE_TAGS, 'GetMyBundleTags'],
+    refetchQueries: [GET_PROFILE_BUNDLE_TAGS, 'GetProfileBundleTags'],
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
   });
   return removeBundleId;
 };
