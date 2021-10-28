@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Container,
   Box,
-  Button,
   Tooltip,
   ClickAwayListener,
   IconButton,
@@ -14,7 +13,11 @@ import {
   DeleteForeverRounded,
 } from '@mui/icons-material';
 
-import { CalendarForm, DateController } from '../../components';
+import {
+  CalendarForm,
+  DateController,
+  EntryListController,
+} from '../../components';
 
 import {
   useGetEntries,
@@ -104,16 +107,6 @@ const Calendar = () => {
     const newEndTime = `${timeStamp[0]}:${timeStamp[1]}`;
     const { endTime: currentEndTime, tag } = lastEntry;
 
-    createNewEntry({
-      variables: {
-        record: {
-          order: lastEntry?.order + 1,
-          date: today,
-          startTime: currentEndTime ? currentEndTime : newEndTime,
-        },
-      },
-    });
-
     if (!currentEndTime) {
       updateEntryById({
         variables: {
@@ -126,9 +119,17 @@ const Calendar = () => {
         },
       });
     }
-  };
 
-  console.log(clipboardSuccess);
+    createNewEntry({
+      variables: {
+        record: {
+          order: lastEntry?.order + 1,
+          date: today,
+          startTime: currentEndTime ? currentEndTime : newEndTime,
+        },
+      },
+    });
+  };
 
   const handleCopyToClipboard = () => {
     const dataToClipboard = entries
@@ -154,31 +155,19 @@ const Calendar = () => {
         today={today}
         setToday={setToday}
       />
-      <Container direction="column">
-        <IconButton
-          onClick={handleAddNewEntryButtonClick(entries[0]?.order - 1)}
-        >
-          <AddCircleRounded color="success" />
-        </IconButton>
-        <ClickAwayListener onClickAway={() => setClipboardSuccess(false)}>
-          <Tooltip
-            PopperProps={{
-              disablePortal: true,
-            }}
-            onClose={() => setClipboardSuccess(false)}
-            open={clipboardSuccess}
-            disableFocusListener
-            disableHoverListener
-            disableTouchListener
-            title="Skopiowano do schowka"
-          >
-            <IconButton onClick={handleCopyToClipboard}>
-              <ContentCopy />
-            </IconButton>
-          </Tooltip>
-        </ClickAwayListener>
+
+      <Container
+        maxWidth="md"
+        sx={{ display: 'flex', flexDirection: 'column' }}
+      >
+        <EntryListController
+          handleOnlyFullFormButtonClick={handleOnlyFullFormButtonClick}
+          onlyFullForm={onlyFullForm}
+          addNewEntry={handleAddNewEntryButtonClick(entries[0]?.order - 1)}
+        />
+
         {entries.map(({ _id, order, tag, startTime, endTime }) => (
-          <Box key={_id} m={2}>
+          <Box sx={{ display: 'flex' }} key={_id} m={2}>
             <CalendarForm
               allowOnlyFullForm={onlyFullForm}
               date={today.toISOString()}
@@ -189,40 +178,54 @@ const Calendar = () => {
               tagName={getValidInitialValue(tag?.name)}
               startTime={getValidInitialValue(startTime)}
             />
-            <IconButton onClick={handleAddNewEntryButtonClick(order)}>
-              <AddCircleRounded color="success" />
+            <IconButton
+              sx={{ fontSize: '30px' }}
+              onClick={handleAddNewEntryButtonClick(order)}
+            >
+              <AddCircleRounded fontSize="inherit" color="success" />
             </IconButton>
-            <IconButton onClick={handleEntryRemove(_id)}>
-              <DeleteForeverRounded color="error" />
+            <IconButton
+              sx={{ fontSize: '30px' }}
+              onClick={handleEntryRemove(_id)}
+            >
+              <DeleteForeverRounded fontSize="inherit" color="error" />
             </IconButton>
           </Box>
         ))}
-        <Tooltip title="Add new entry with current time">
-          <IconButton disabled={onlyFullForm} onClick={handlePauseButtonClick}>
-            <StopCircle
-              color={onlyFullForm ? 'disabled' : 'info'}
-              style={{ fontSize: '50px' }}
-              fontSize="inherit"
-            />
-          </IconButton>
-        </Tooltip>
+
+        <Box sx={{ alignSelf: 'flex-end' }}>
+          <Tooltip title="Add new entry with current time">
+            <IconButton
+              disabled={onlyFullForm}
+              onClick={handlePauseButtonClick}
+            >
+              <StopCircle
+                color={onlyFullForm ? 'disabled' : 'info'}
+                style={{ fontSize: '50px' }}
+                fontSize="inherit"
+              />
+            </IconButton>
+          </Tooltip>
+
+          <ClickAwayListener onClickAway={() => setClipboardSuccess(false)}>
+            <Tooltip
+              PopperProps={{
+                disablePortal: true,
+              }}
+              onClose={() => setClipboardSuccess(false)}
+              open={clipboardSuccess}
+              disableFocusListener
+              disableHoverListener
+              disableTouchListener
+              title="Skopiowano do schowka"
+            >
+              <IconButton onClick={handleCopyToClipboard}>
+                <ContentCopy />
+              </IconButton>
+            </Tooltip>
+          </ClickAwayListener>
+        </Box>
       </Container>
-      <div>
-        <Button
-          variant="contained"
-          disabled={onlyFullForm}
-          onClick={handleOnlyFullFormButtonClick}
-        >
-          Accept only full form
-        </Button>
-        <Button
-          variant="contained"
-          disabled={!onlyFullForm}
-          onClick={handleOnlyFullFormButtonClick}
-        >
-          Accept partially filled form
-        </Button>
-      </div>
     </div>
   );
 };
