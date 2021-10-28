@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Box } from '@mui/material';
 
 import { useGetEntries } from '../../queries';
+import { CalendarForm } from '../../components';
 
 const getTimeStamp = () => {
   const timeStamp = new Date();
@@ -10,6 +11,8 @@ const getTimeStamp = () => {
 
   return timeStamp;
 };
+
+const getValidInitialValue = (value) => value || '';
 
 const Calendar = () => {
   const [today, setToday] = useState(getTimeStamp());
@@ -38,14 +41,20 @@ const Calendar = () => {
       </h1>
       <button onClick={() => handleDateButtonClick(1)}>Next</button>
       <Container direction="column">
-        {data?.entryMany?.map(({ _id, tag, order, startTime, endTime }) => (
-          <li key={_id}>
-            <p>Tag Name: {tag?.name}</p>
-            <p>Tag Bundle Name: {tag?.tagBundle?.name}</p>
-            <p>Order{order}</p>
-            <p>{startTime}</p>
-            <p>{endTime}</p>
-          </li>
+        {data?.entryMany?.map(({ _id, tag, startTime, endTime }) => (
+          <Box key={_id} m={2}>
+            <CalendarForm
+              date={today.toISOString()}
+              tagName={getValidInitialValue(tag?.name)}
+              tagBundleName={getValidInitialValue(tag?.tagBundle?.name)}
+              startTime={getValidInitialValue(startTime)}
+              endTime={getValidInitialValue(endTime)}
+              tagBundleId={getValidInitialValue(tag?.tagBundle?._id)}
+              id={_id}
+            />
+            <button>Add new</button>
+            <button>Remove</button>
+          </Box>
         ))}
       </Container>
     </div>
