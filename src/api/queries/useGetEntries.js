@@ -28,7 +28,7 @@ const useGetEntries = (filter = {}) => {
     variables: { filter, sort: 'ORDER_ASC' },
   });
 
-  return { entries: data?.entryMany, loading };
+  return { entries: data?.entryMany || [], loading };
 };
 
 export default useGetEntries;
