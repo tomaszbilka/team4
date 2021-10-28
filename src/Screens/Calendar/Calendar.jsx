@@ -104,11 +104,12 @@ const Calendar = () => {
           <Box key={_id} m={2}>
             <CalendarForm
               date={today.toISOString()}
-              tagName={getValidInitialValue(tag?.name)}
-              tagBundleName={getValidInitialValue(tag?.tagBundle?.name)}
-              startTime={getValidInitialValue(startTime)}
               endTime={getValidInitialValue(endTime)}
               id={_id}
+              tagBundleName={getValidInitialValue(tag?.tagBundle?.name)}
+              tagBundleId={getValidInitialValue(tag?.tagBundle?._id)}
+              tagName={getValidInitialValue(tag?.name)}
+              startTime={getValidInitialValue(startTime)}
             />
             <button onClick={handleAddNewEntryButtonClick(order)}>
               Add new

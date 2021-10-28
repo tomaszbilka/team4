@@ -1,12 +1,15 @@
-import React from 'react';
-import { Grid, TextField, Select, MenuItem } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Grid, TextField, Select, MenuItem, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 import _isEqual from 'lodash/isEqual';
 
 import { useUpdateEntry } from '../../mutations';
+import { useGetTagBundles, useGetTagsByBundle } from '../../queries';
 
-const CalendarForm = ({ id, date, ...initialValues }) => {
+const CalendarForm = ({ id, date, tagBundleId, ...initialValues }) => {
   const { updateEntryById } = useUpdateEntry();
+  const { data } = useGetTagBundles();
+  const { bundleTags, getBundleTags } = useGetTagsByBundle();
   const { values, errors, touched, handleChange, handleSubmit, setFieldValue } =
     useFormik({
       initialValues,
@@ -29,6 +32,15 @@ const CalendarForm = ({ id, date, ...initialValues }) => {
     setFieldValue('tagName', '');
     handleChange(e);
   };
+
+  const handleAutocompleteOnBlur = async (e) => {
+    await setFieldValue(e.target.name, e.target.value);
+    handleSubmit(e);
+  };
+
+  useEffect(() => {
+    getBundleTags({ variables: { id: tagBundleId } });
+  }, []);
 
   return (
     <form>
@@ -64,17 +76,33 @@ const CalendarForm = ({ id, date, ...initialValues }) => {
           onChange={handleTagBundleChange}
           sx={{ width: 150 }}
         >
-          <MenuItem value="selleo">selleo</MenuItem>
-          <MenuItem value="selleo2">selleo2</MenuItem>
+          {data?.tagBundleMany?.map(({ name, _id: id }) => (
+            <MenuItem
+              onBlur={() => getBundleTags({ variables: { id } })}
+              key={id}
+              value={name}
+            >
+              {name}
+            </MenuItem>
+          ))}
         </Select>
-        <TextField
+        <Autocomplete
+          disablePortal
+          options={bundleTags || []}
           value={values.tagName}
-          onChange={handleChange}
-          onBlur={handleSubmit}
+          error={touched.tagName && Boolean(errors.tagName)}
           disabled={!values.tagBundleName}
-          id="tagName"
-          name="tagName"
-          variant="outlined"
+          onChange={(_, value) => setFieldValue('tagName', value)}
+          onBlur={handleAutocompleteOnBlur}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField
+              id="tagName"
+              name="tagName"
+              value={values.tagName}
+              {...params}
+            />
+          )}
         />
       </Grid>
     </form>
