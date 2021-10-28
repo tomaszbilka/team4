@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Box, Button } from '@mui/material';
 
 import { CalendarForm } from '../../components';
@@ -22,12 +22,11 @@ const Calendar = () => {
   const [onlyFullForm, setOnlyFullForm] = useState(
     getFromLocalStorage(onlyFullFormToken)
   );
-  const [entries, setEntries] = useState([]);
   const [today, setToday] = useState(getTimeStamp());
   const { removeEntryById } = useRemoveEntryById();
   const { createNewEntry } = useCreateNewEntry();
   const { updateEntryById } = useUpdateEntry();
-  const { data } = useGetEntries({
+  const { entries } = useGetEntries({
     date: today,
   });
 
@@ -50,10 +49,10 @@ const Calendar = () => {
 
   const handleAddNewEntryButtonClick = (currentOrder) => () => {
     const orderOfNewEntry = currentOrder + 1;
-    const indexOfCurrentEntry = data?.entryMany?.findIndex(
+    const indexOfCurrentEntry = entries?.findIndex(
       ({ order }) => order === currentOrder
     );
-    const entriesToBeUpdated = data?.entryMany?.slice(indexOfCurrentEntry + 1);
+    const entriesToBeUpdated = entries?.slice(indexOfCurrentEntry + 1);
 
     entriesToBeUpdated.map(async ({ _id, order: orderToBeUpdated, tag }) => {
       await updateEntryById({
@@ -85,16 +84,6 @@ const Calendar = () => {
       return !prevState;
     });
 
-  useEffect(() => {
-    const entriesList = data?.entryMany && [...data?.entryMany];
-
-    entriesList &&
-      entriesList.sort(
-        ({ order: orderA }, { order: orderB }) => orderA - orderB
-      ) &&
-      setEntries(entriesList);
-  }, [data]);
-
   return (
     <div>
       <button onClick={() => handleDateButtonClick(-1)}>Prev</button>
@@ -107,6 +96,9 @@ const Calendar = () => {
       </h1>
       <button onClick={() => handleDateButtonClick(1)}>Next</button>
       <Container direction="column">
+        <button onClick={handleAddNewEntryButtonClick(entries[0]?.order - 1)}>
+          Add new
+        </button>
         {entries.map(({ _id, order, tag, startTime, endTime }) => (
           <Box key={_id} m={2}>
             <CalendarForm
