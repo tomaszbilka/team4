@@ -1,11 +1,29 @@
 import React from 'react';
 import { Grid, TextField, Select, MenuItem } from '@mui/material';
 import { useFormik } from 'formik';
+import _isEqual from 'lodash/isEqual';
 
-const Form = ({ ...initialValues }) => {
-  const { values, errors, touched, handleChange, setFieldValue } = useFormik({
-    initialValues,
-  });
+import { useUpdateEntry } from '../../mutations';
+
+const CalendarForm = ({ id, date, ...initialValues }) => {
+  const { updateEntryById } = useUpdateEntry();
+  const { values, errors, touched, handleChange, handleSubmit, setFieldValue } =
+    useFormik({
+      initialValues,
+      onSubmit: (values) => {
+        if (!_isEqual(values, initialValues)) {
+          updateEntryById({
+            variables: {
+              id,
+              record: {
+                date,
+                ...values,
+              },
+            },
+          });
+        }
+      },
+    });
 
   const handleTagBundleChange = (e) => {
     setFieldValue('tagName', '');
@@ -22,6 +40,7 @@ const Form = ({ ...initialValues }) => {
           value={values.startTime}
           error={touched.startTime && Boolean(errors.startTime)}
           onChange={handleChange}
+          onBlur={handleSubmit}
           inputProps={{
             step: 60,
           }}
@@ -33,6 +52,7 @@ const Form = ({ ...initialValues }) => {
           value={values.endTime}
           error={touched.endTime && Boolean(errors.endTime)}
           onChange={handleChange}
+          onBlur={handleSubmit}
           inputProps={{
             step: 60,
           }}
@@ -50,6 +70,7 @@ const Form = ({ ...initialValues }) => {
         <TextField
           value={values.tagName}
           onChange={handleChange}
+          onBlur={handleSubmit}
           disabled={!values.tagBundleName}
           id="tagName"
           name="tagName"
@@ -60,4 +81,4 @@ const Form = ({ ...initialValues }) => {
   );
 };
 
-export default Form;
+export default CalendarForm;

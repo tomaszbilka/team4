@@ -108,7 +108,6 @@ const Calendar = () => {
               tagBundleName={getValidInitialValue(tag?.tagBundle?.name)}
               startTime={getValidInitialValue(startTime)}
               endTime={getValidInitialValue(endTime)}
-              tagBundleId={getValidInitialValue(tag?.tagBundle?._id)}
               id={_id}
             />
             <button onClick={handleAddNewEntryButtonClick(order)}>
