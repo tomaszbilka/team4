@@ -4,7 +4,11 @@ import { Container, Box } from '@mui/material';
 import { CalendarForm } from '../../components';
 
 import { useGetEntries } from '../../queries';
-import { useRemoveEntryById } from '../../mutations';
+import {
+  useRemoveEntryById,
+  useCreateNewEntry,
+  useUpdateEntry,
+} from '../../mutations';
 
 const getTimeStamp = () => {
   const timeStamp = new Date();
@@ -19,6 +23,8 @@ const getValidInitialValue = (value) => value || '';
 const Calendar = () => {
   const [today, setToday] = useState(getTimeStamp());
   const { removeEntryById } = useRemoveEntryById();
+  const { createNewEntry } = useCreateNewEntry();
+  const { updateEntryById } = useUpdateEntry();
   const { data } = useGetEntries({
     date: today,
   });
@@ -40,6 +46,36 @@ const Calendar = () => {
     });
   };
 
+  const handleAddNewEntryButtonClick = (currentOrder) => () => {
+    const orderOfNewEntry = currentOrder + 1;
+    const indexOfCurrentEntry = data?.entryMany?.findIndex(
+      ({ order }) => order === currentOrder
+    );
+    const entriesToBeUpdated = data?.entryMany?.slice(indexOfCurrentEntry + 1);
+
+    entriesToBeUpdated.map(({ _id, order: orderToBeUpdated, tag }) => {
+      updateEntryById({
+        variables: {
+          id: _id,
+          record: {
+            order: orderToBeUpdated + 1,
+            tagName: tag?.name,
+            tagBundleName: tag?.tagBundle?.name,
+          },
+        },
+      });
+    });
+
+    createNewEntry({
+      variables: {
+        record: {
+          order: orderOfNewEntry,
+          date: today,
+        },
+      },
+    });
+  };
+
   return (
     <div>
       <button onClick={() => handleDateButtonClick(-1)}>Prev</button>
@@ -52,7 +88,7 @@ const Calendar = () => {
       </h1>
       <button onClick={() => handleDateButtonClick(1)}>Next</button>
       <Container direction="column">
-        {data?.entryMany?.map(({ _id, tag, startTime, endTime }) => (
+        {data?.entryMany?.map(({ _id, order, tag, startTime, endTime }) => (
           <Box key={_id} m={2}>
             <CalendarForm
               date={today.toISOString()}
@@ -63,7 +99,9 @@ const Calendar = () => {
               tagBundleId={getValidInitialValue(tag?.tagBundle?._id)}
               id={_id}
             />
-            <button>Add new</button>
+            <button onClick={handleAddNewEntryButtonClick(order)}>
+              Add new
+            </button>
             <button onClick={handleEntryRemove(_id)}>Remove</button>
           </Box>
         ))}
