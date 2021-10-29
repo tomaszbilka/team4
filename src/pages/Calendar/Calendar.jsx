@@ -105,15 +105,14 @@ const Calendar = () => {
     const lastEntry = entries[entries.length - 1];
     const timeStamp = new Date().toTimeString().split(':');
     const newEndTime = `${timeStamp[0]}:${timeStamp[1]}`;
-    const { endTime: currentEndTime, tag } = lastEntry;
 
-    if (!currentEndTime) {
+    if (!lastEntry?.endTime) {
       updateEntryById({
         variables: {
           id: lastEntry?._id,
           record: {
-            tagName: tag?.name,
-            tagBundleName: tag?.tagBundle?.name,
+            tagName: lastEntry?.tag?.name,
+            tagBundleName: lastEntry?.tag?.tagBundle?.name,
             endTime: newEndTime,
           },
         },
@@ -125,7 +124,7 @@ const Calendar = () => {
         record: {
           order: lastEntry?.order + 1,
           date: today,
-          startTime: currentEndTime ? currentEndTime : newEndTime,
+          startTime: !lastEntry?.endTime ? !lastEntry?.endTime : newEndTime,
         },
       },
     });
@@ -196,11 +195,11 @@ const Calendar = () => {
         <Box sx={{ alignSelf: 'flex-end' }}>
           <Tooltip title="Add new entry with current time">
             <IconButton
-              disabled={onlyFullForm}
+              disabled={onlyFullForm || !entries?.length}
               onClick={handlePauseButtonClick}
             >
               <StopCircle
-                color={onlyFullForm ? 'disabled' : 'info'}
+                color={onlyFullForm || !entries?.length ? 'disabled' : 'info'}
                 style={{ fontSize: '50px' }}
                 fontSize="inherit"
               />
