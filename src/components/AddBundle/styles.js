@@ -1,7 +1,7 @@
 export const wrapperStyles = {
   width: '100vw',
   height: '100vh',
-  backgroundColor: 'rgba(165, 165, 165, 0.5)',
+  backgroundColor: 'rgba(165, 165, 165, 0.8)',
   position: 'absolute',
   top: '0',
   left: '0',
@@ -12,7 +12,7 @@ export const wrapperStyles = {
 };
 
 export const containerStyles = {
-  background: '#bbb',
+  background: '#fff',
   display: 'flex',
   flexDirection: 'column',
   border: '2px solid black',
