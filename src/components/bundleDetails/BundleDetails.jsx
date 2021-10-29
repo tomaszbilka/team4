@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
 
-import Pagination from '../Pagination/';
+import Pagination from '../Pagination';
 
 import { getValidInitialValue } from '../../utils/shared';
 
@@ -79,12 +79,41 @@ const BundleDetails = () => {
                 {description}
               </p>
             )}
+            {isDescriptionOpen && isMatchBundleToUser && (
+              <div style={descriptionStyles}>
+                <TextField
+                  id="new-description"
+                  label="new-description"
+                  placeholder="bundle description"
+                  type="text"
+                  value={updatedBundle}
+                  onChange={descriptionChangeHandler}
+                  multiline
+                />
+                <div>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={updateBundleHandler}
+                  >
+                    update
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={closeBundleHandler}
+                  >
+                    close
+                  </Button>
+                </div>
+              </div>
+            )}
             {isMatchBundleToUser ? (
               <p>
                 this is{' '}
                 <span
                   style={{
-                    backgroundColor: isMatchBundleToUser ? 'green' : '',
+                    color: isMatchBundleToUser ? 'green' : '',
                   }}
                 >
                   YOUR
@@ -96,28 +125,13 @@ const BundleDetails = () => {
                 this is{' '}
                 <span
                   style={{
-                    backgroundColor: !isMatchBundleToUser ? 'red' : '',
+                    color: !isMatchBundleToUser ? 'red' : '',
                   }}
                 >
                   NOT
                 </span>{' '}
                 your bundle!
               </p>
-            )}
-            {isDescriptionOpen && isMatchBundleToUser && (
-              <div style={descriptionStyles}>
-                <TextField
-                  id="outlined-textarea"
-                  label="Multiline Placeholder"
-                  placeholder="Placeholder"
-                  type="text"
-                  value={updatedBundle}
-                  onChange={descriptionChangeHandler}
-                  multiline
-                />
-                <button onClick={updateBundleHandler}>update</button>
-                <button onClick={closeBundleHandler}>close</button>
-              </div>
             )}
           </div>
 
