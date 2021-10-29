@@ -49,6 +49,7 @@ const AddBundle = ({ addNewBundleItem, closeAddBundle }) => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched?.name && errors?.name}
+                helperText={touched?.name && errors?.name}
                 name="name"
                 type="text"
               />
@@ -59,6 +60,7 @@ const AddBundle = ({ addNewBundleItem, closeAddBundle }) => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 error={touched?.description && errors?.description}
+                helperText={touched?.description && errors?.description}
                 multiline
                 maxRows={4}
                 name="description"
