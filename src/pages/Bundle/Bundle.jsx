@@ -38,7 +38,7 @@ const Bundle = () => {
 
   if (loading) return <div>loading...</div>;
 
-  const noRepetitionBundle = data.tagBundleMany.filter(
+  const noRepetitionBundle = data?.tagBundleMany?.filter(
     (bundle, index, self) =>
       index === self.findIndex((pos) => pos.name === bundle.name)
   );
@@ -52,7 +52,7 @@ const Bundle = () => {
             ADD
           </Button>
         </div>
-        {noRepetitionBundle.map((singleBundle) => (
+        {noRepetitionBundle?.map((singleBundle) => (
           <Link
             key={singleBundle._id}
             className={classes.bundleStyle}

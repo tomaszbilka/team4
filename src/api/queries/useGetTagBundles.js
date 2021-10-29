@@ -1,8 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
 
 export const GET_TAG_BUNDLES = gql`
-  query GetTagBundles {
-    tagBundleMany {
+  query GetTagBundles($limit: Int) {
+    tagBundleMany(limit: $limit) {
       _id
       name
       tags {
@@ -15,6 +15,9 @@ export const GET_TAG_BUNDLES = gql`
 
 const useGetTagBundles = () => {
   const { data, loading } = useQuery(GET_TAG_BUNDLES, {
+    variables: {
+      limit: 200,
+    },
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
   });
