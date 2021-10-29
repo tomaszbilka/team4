@@ -123,8 +123,8 @@ const Calendar = () => {
       variables: {
         record: {
           order: lastEntry?.order + 1,
-          date: today,
-          startTime: !lastEntry?.endTime ? !lastEntry?.endTime : newEndTime,
+          date: today.toISOString(),
+          startTime: lastEntry?.endTime ? lastEntry?.endTime : newEndTime,
         },
       },
     });
