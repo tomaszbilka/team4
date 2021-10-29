@@ -79,6 +79,35 @@ const BundleDetails = () => {
                 {description}
               </p>
             )}
+            {isDescriptionOpen && isMatchBundleToUser && (
+              <div style={descriptionStyles}>
+                <TextField
+                  id="new-description"
+                  label="new-description"
+                  placeholder="bundle description"
+                  type="text"
+                  value={updatedBundle}
+                  onChange={descriptionChangeHandler}
+                  multiline
+                />
+                <div>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={updateBundleHandler}
+                  >
+                    update
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={closeBundleHandler}
+                  >
+                    close
+                  </Button>
+                </div>
+              </div>
+            )}
             {isMatchBundleToUser ? (
               <p>
                 this is{' '}
@@ -103,21 +132,6 @@ const BundleDetails = () => {
                 </span>{' '}
                 your bundle!
               </p>
-            )}
-            {isDescriptionOpen && isMatchBundleToUser && (
-              <div style={descriptionStyles}>
-                <TextField
-                  id="outlined-textarea"
-                  label="Multiline Placeholder"
-                  placeholder="Placeholder"
-                  type="text"
-                  value={updatedBundle}
-                  onChange={descriptionChangeHandler}
-                  multiline
-                />
-                <button onClick={updateBundleHandler}>update</button>
-                <button onClick={closeBundleHandler}>close</button>
-              </div>
             )}
           </div>
 
