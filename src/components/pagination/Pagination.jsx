@@ -72,7 +72,7 @@ const Pagination = () => {
   return (
     <>
       <div className={classes.wrapper}>
-        <h3>Pagination</h3>
+        <h3>Tags:</h3>
         <PaginatedItems itemsPerPage={10} />
         {items.length === 0 && <p>No tags yet!</p>}
       </div>

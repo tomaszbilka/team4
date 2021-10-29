@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
 
-import Pagination from '../Pagination/';
+import Pagination from '../Pagination';
 
 import { getValidInitialValue } from '../../utils/shared';
 
@@ -84,7 +84,7 @@ const BundleDetails = () => {
                 this is{' '}
                 <span
                   style={{
-                    backgroundColor: isMatchBundleToUser ? 'green' : '',
+                    color: isMatchBundleToUser ? 'green' : '',
                   }}
                 >
                   YOUR
@@ -96,7 +96,7 @@ const BundleDetails = () => {
                 this is{' '}
                 <span
                   style={{
-                    backgroundColor: !isMatchBundleToUser ? 'red' : '',
+                    color: !isMatchBundleToUser ? 'red' : '',
                   }}
                 >
                   NOT
